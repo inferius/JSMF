@@ -25,5 +25,10 @@ namespace JSMF.Parser.Tokenizer
         {
             return $"{Type} => {Value}";
         }
+
+        public string ToStringWithFile()
+        {
+            return ToString() + $" {Position}";
+        }
     }
 }

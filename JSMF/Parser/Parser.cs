@@ -414,13 +414,15 @@ namespace JSMF.Parser
         #region Helper parse keywords methods
         public INode ParseBool()
         {
+            var _pPos = stream.CurrentPosition();
             var val = stream.Peek().Value;
             SkipKeyword(stream.Peek().Value);
-            return new NodeBoolean { Value = val == "true" };
+            return new NodeBoolean { Value = val == "true", FileInfo = _pPos};
         }
 
         public INode ParseVardef()
         {
+            var _pPos = stream.CurrentPosition();
             var name = ParseVarname();
             INode def = null;
             if (IsOperator("="))
@@ -429,11 +431,12 @@ namespace JSMF.Parser
                 def = ParseExpression();
             }
             if (IsSeparator(";")) SkipSeparator(";");
-            return new NodeAssing { Operator = "=", Left = name, Right = def };
+            return new NodeAssing { Operator = "=", Left = name, Right = def, FileInfo = _pPos};
         }
 
         public INode ParseProgram()
         {
+            var _pPos = stream.CurrentPosition();
             var prog = new List<INode>();
             SkipAllLineBreak();
             SkipSeparator("{");
@@ -444,7 +447,8 @@ namespace JSMF.Parser
                 SkipSeparator("}");
                 return new NodeProgram
                 {
-                    Program = prog
+                    Program = prog,
+                    FileInfo = _pPos
                 };
             }
 
@@ -476,6 +480,7 @@ namespace JSMF.Parser
 
         public INode ParseIf()
         {
+            var _pPos = stream.CurrentPosition();
             SkipKeyword("if");
             var cond = ParseExpression();
             SkipAllLineBreak();
@@ -484,7 +489,8 @@ namespace JSMF.Parser
             var ret = new NodeIf
             {
                 Condition = cond,
-                Then = then
+                Then = then,
+                FileInfo = _pPos
             };
 
             if (IsKeyword("else"))
@@ -499,6 +505,7 @@ namespace JSMF.Parser
 
         public INode ParseWhile()
         {
+            var _pPos = stream.CurrentPosition();
             SkipKeyword("while");
 
             var cond = ParseExpression();
@@ -508,12 +515,14 @@ namespace JSMF.Parser
             return new NodeWhile
             {
                 Condition = cond,
-                Body = body
+                Body = body,
+                FileInfo = _pPos
             };
         }
 
         public INode ParseDoWhile()
         {
+            var _pPos = stream.CurrentPosition();
             SkipKeyword("do");
             var body = ParseProgram();
             if (IsSeparator(";")) SkipSeparator(";");
@@ -526,12 +535,14 @@ namespace JSMF.Parser
             {
                 Condition = cond[0],
                 Body = body,
-                IsDoWhile = true
+                IsDoWhile = true,
+                FileInfo = _pPos
             };
         }
 
         public INode ParseFor()
         {
+            var _pPos = stream.CurrentPosition();
             SkipKeyword("for");
             if (!IsSeparator("(")) Unexpected();
 
@@ -549,7 +560,8 @@ namespace JSMF.Parser
                 Body = body,
                 VarDefs = conds[0],
                 Condition = conds[1],
-                Iterate = conds[2]
+                Iterate = conds[2],
+                FileInfo = _pPos
             };
 
         }
@@ -572,6 +584,7 @@ namespace JSMF.Parser
 
         public INode ParseForOf()
         {
+            var _pPos = stream.CurrentPosition();
             SkipSeparator("(");
             if (stream.Peek().Value != "var" && stream.Peek().Value != "let" && stream.Peek().Value != "const")
             {
@@ -590,13 +603,15 @@ namespace JSMF.Parser
                 IsForOf = isForOf,
                 VarDef = varDef,
                 Enumerate = array,
-                Body = body
+                Body = body,
+                FileInfo = _pPos
             };
 
         }
 
         public INode ParseArrowFunction(List<INode> args, bool isAsync = false)
         {
+            var _pPos = stream.CurrentPosition();
             if (IsOperator("=>"))
             {
                 SkipOperator("=>");
@@ -607,12 +622,14 @@ namespace JSMF.Parser
                 IsAsync = isAsync,
                 IsAnonymous = true,
                 Arguments = args,
-                Body = IsSeparator("{") ? ParseProgram() : new NodeReturn { Body = ParseExpression() }
+                Body = IsSeparator("{") ? ParseProgram() : new NodeReturn { Body = ParseExpression() },
+                FileInfo = _pPos
             };
         }
 
         public INode ParseFunction(bool isAsync = false)
         {
+            var _pPos = stream.CurrentPosition();
             SkipKeyword("function");
             var isGenerator = IsSeparator("*");
             if (IsSeparator("*")) SkipSeparator("*");
@@ -631,12 +648,14 @@ namespace JSMF.Parser
                 IsGenerator = isGenerator,
                 Function = name,
                 Arguments = args,
-                Body = body
+                Body = body,
+                FileInfo = _pPos
             };
         }
 
         public INode ParseVarname()
         {
+            var _pPos = stream.CurrentPosition();
             string varType = null;
             if (IsKeyword("const") || IsKeyword("let") || IsKeyword("var"))
             {
@@ -657,7 +676,8 @@ namespace JSMF.Parser
 
             return new NodeIdentifier
             {
-                Value = name.Value
+                Value = name.Value,
+                FileInfo = _pPos
             };
         }
 
@@ -678,6 +698,7 @@ namespace JSMF.Parser
 
         public INode ParseTopLevel()
         {
+            var _pPos = stream.CurrentPosition();
             var prog = new List<INode>();
 
             while (!stream.Eof())
@@ -697,7 +718,8 @@ namespace JSMF.Parser
 
             return new NodeProgram
             {
-                Program = prog
+                Program = prog,
+                FileInfo = _pPos
             };
         }
 

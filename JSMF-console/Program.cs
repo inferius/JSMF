@@ -20,7 +20,7 @@ namespace JSMF_console
             File.Delete(@"C:\Temp\tokens.txt");
             while (!tokstr.Eof())
             {
-                File.AppendAllText(@"C:\Temp\tokens.txt", $"{tokstr.Next()}\n");
+                File.AppendAllText(@"C:\Temp\tokens.txt", $"{tokstr.Next().ToStringWithFile()}\n");
             }
 
             var tokenStream = new Parser(new TokenStream(new InputStream(new StreamReader(filePathRelative, Encoding.UTF8), filePathRelative)));
