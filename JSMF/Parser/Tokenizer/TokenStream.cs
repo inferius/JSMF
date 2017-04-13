@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Parser.Tokenizer
 {
@@ -19,6 +20,11 @@ namespace JSMF.Parser.Tokenizer
         public TokenStream(InputStream stream)
         {
             this.stream = stream;
+        }
+
+        public Position CurrentPosition()
+        {
+            return Peek().Position;
         }
 
         public Token Peek()
@@ -102,17 +108,17 @@ namespace JSMF.Parser.Tokenizer
             }
             if (TokenRegistredWords.IsSeparatorChar(ch))
             {
-                return new Token(TokenType.Separator, (char)ch, stream.Line, stream.Column);
+                return new Token(TokenType.Separator, (char)ch, stream.FilePosition);
             }
             if (TokenRegistredWords.IsLineBreak((char)ch))
             {
                 if (ch == '\n' && stream.Peek() == '\r' || ch == '\r' && stream.Peek() == '\n')
                 {
-                    //return new Token(TokenType.Separator, $"{(char)ch}{(char)stream.Next()}", stream.Line, stream.Column);
-                    return new Token(TokenType.Separator, "LB", stream.Line, stream.Column);
+                    //return new Token(TokenType.Separator, $"{(char)ch}{(char)stream.Next()}", stream.FilePosition);
+                    return new Token(TokenType.Separator, "LB", stream.FilePosition);
                 }
-                //return new Token(TokenType.Separator, (char)ch, stream.Line, stream.Column);
-                return new Token(TokenType.Separator, "LB", stream.Line, stream.Column);
+                //return new Token(TokenType.Separator, (char)ch, stream.FilePosition);
+                return new Token(TokenType.Separator, "LB", stream.FilePosition);
             }
             if (TokenRegistredWords.IsOperatorChar(ch))
             {

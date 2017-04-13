@@ -11,5 +11,7 @@ namespace JSMF.Parser.AST.Nodes
         public NodeType Type { get; } = NodeType.ObjectCall;
         public INode Name { get; set; }
         public INode Child { get; set; }
+
+        public Position FileInfo {get; set; }
     }
 }

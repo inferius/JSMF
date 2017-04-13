@@ -87,6 +87,7 @@
     <Compile Include="Parser\AST\Nodes\NodeVarDef.cs" />
     <Compile Include="Parser\AST\Nodes\NodeWhile.cs" />
     <Compile Include="Parser\AST\Nodes\Number.cs" />
+    <Compile Include="Parser\AST\Nodes\Position.cs" />
     <Compile Include="Parser\InputStream.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Tokenizer\Token.cs" />

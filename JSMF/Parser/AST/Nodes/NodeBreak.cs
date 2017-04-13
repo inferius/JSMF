@@ -10,6 +10,8 @@ namespace JSMF.Parser.AST.Nodes
     {
         public NodeType Type { get; }
 
+        public Position FileInfo {get; set; }
+
         public NodeNoValue(NodeType type)
         {
             Type = type;

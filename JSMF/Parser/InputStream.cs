@@ -1,22 +1,24 @@
 ﻿using System.IO;
+using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Parser
 {
     public class InputStream
     {
         private StreamReader stream;
-
-        public int Line { get; private set; } = 0;
-        public int Column { get; private set; } = 0;
+        private Position _filePosition;
+        public Position FilePosition => _filePosition;
         public int Position { get; private set; } = 0;
 
         public InputStream(string data)
         {
+            _filePosition = new Position(null, data);
             stream = new StreamReader(StreamFromString(data));
         }
 
-        public InputStream(StreamReader fileReader)
+        public InputStream(StreamReader fileReader, string filePath)
         {
+            _filePosition = new Position(filePath);
             stream = fileReader;
         }
 
@@ -29,10 +31,10 @@ namespace JSMF.Parser
 
             if (Tokenizer.TokenRegistredWords.IsLineBreak(ch))
             {
-                if (!(ch == '\n' && stream.Peek() == '\r' || ch == '\r' && stream.Peek() == '\n')) Line++;
-                Column = 0;
+                if (!(ch == '\n' && stream.Peek() == '\r' || ch == '\r' && stream.Peek() == '\n')) _filePosition.Line++;
+                _filePosition.Column = 0;
             }
-            else Column++;
+            else _filePosition.Column++;
 
             return ch;
         }
@@ -49,7 +51,7 @@ namespace JSMF.Parser
 
         public void Error(string msg)
         {
-            throw new Exceptions.ParserException(msg, Line, Column);
+            throw new Exceptions.ParserException(msg, FilePosition);
         }
 
         internal static Stream StreamFromString(string data)

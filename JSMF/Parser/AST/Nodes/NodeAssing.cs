@@ -1,4 +1,6 @@
-﻿namespace JSMF.Parser.AST.Nodes
+﻿using System;
+
+namespace JSMF.Parser.AST.Nodes
 {
     public class NodeAssing : INode
     {
@@ -6,6 +8,8 @@
         public string Operator { get; set; }
         public INode Left { get; set; }
         public INode Right { get; set; }
+
+        public Position FileInfo {get; set; }
 
         public override string ToString()
         {

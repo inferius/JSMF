@@ -9,5 +9,6 @@ namespace JSMF.Parser.AST.Nodes
     public interface INode
     {
         NodeType Type { get; }
+        Position FileInfo { get; }
     }
 }

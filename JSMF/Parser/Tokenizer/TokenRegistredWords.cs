@@ -105,7 +105,7 @@ namespace JSMF.Parser.Tokenizer
                 str.Append((char)ch);
             }
             stream.Next();
-            return new[] { new Token(TokenType.String, str.ToString(), stream.Line, stream.Column) };
+            return new[] { new Token(TokenType.String, str.ToString(), stream.FilePosition) };
         }
 
         private static IEnumerable<Token> ReadTemplateString(InputStream stream)
@@ -137,16 +137,16 @@ namespace JSMF.Parser.Tokenizer
                 {
                     if (isTemplateStart)
                     {
-                        if (str.Length > 0) tokens.Add(new Token(TokenType.String, str.ToString(), stream.Line, stream.Column));
+                        if (str.Length > 0) tokens.Add(new Token(TokenType.String, str.ToString(), stream.FilePosition));
                         str.Clear();
 
-                        if (tokens.Any()) tokens.Add(new Token(TokenType.Operator, "+", stream.Line, stream.Column));
+                        if (tokens.Any()) tokens.Add(new Token(TokenType.Operator, "+", stream.FilePosition));
 
                         tokens.Add(ReadLiteralOrVar(stream));
                         if (stream.Peek() != '}') stream.Error($"Unexpected token '{(char)stream.Peek()}'");
                         stream.Next();
 
-                        if (!stream.Eof()) tokens.Add(new Token(TokenType.Operator, "+", stream.Line, stream.Column));
+                        if (!stream.Eof()) tokens.Add(new Token(TokenType.Operator, "+", stream.FilePosition));
                         isTemplateStart = false;
                         continue;
                     }
@@ -161,7 +161,7 @@ namespace JSMF.Parser.Tokenizer
                 str.Append((char)ch);
             }
             stream.Next();
-            if (str.Length > 0) tokens.Add(new Token(TokenType.String, str.ToString(), stream.Line, stream.Column));
+            if (str.Length > 0) tokens.Add(new Token(TokenType.String, str.ToString(), stream.FilePosition));
 
             return tokens;
         }
@@ -182,7 +182,7 @@ namespace JSMF.Parser.Tokenizer
 
             if (!IsStringLiteralOrVariableValid(str.ToString())) stream.Error($"Unexpected token '{str}'");
 
-            return new Token(KeyWords.Contains(str.ToString()) ? TokenType.Keyword : TokenType.Identifier, str.ToString(), stream.Line, stream.Column);
+            return new Token(KeyWords.Contains(str.ToString()) ? TokenType.Keyword : TokenType.Identifier, str.ToString(), stream.FilePosition);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace JSMF.Parser.Tokenizer
             }
             var fstr = str.ToString();
 
-            return new Token(TokenType.Operator, fstr, stream.Line, stream.Column);
+            return new Token(TokenType.Operator, fstr, stream.FilePosition);
         }
 
         public static Token ReadNumber(InputStream stream, int firstChar = 0)
@@ -250,7 +250,7 @@ namespace JSMF.Parser.Tokenizer
                 str.Append((char)stream.Next());
             }
 
-            return new Token(TokenType.Numeric, str.ToString(), stream.Line, stream.Column);
+            return new Token(TokenType.Numeric, str.ToString(), stream.FilePosition);
         }
 
         public static bool IsSeparatorChar(int ch)
@@ -286,9 +286,9 @@ namespace JSMF.Parser.Tokenizer
                 str.Append((char)stream.Next());
             }
             var finalString = str.ToString();
-            if (KeyWords.Contains(finalString)) return new Token(TokenType.Keyword, finalString, stream.Line, stream.Column);
+            if (KeyWords.Contains(finalString)) return new Token(TokenType.Keyword, finalString, stream.FilePosition);
 
-            return new Token(TokenType.Identifier, finalString, stream.Line, stream.Column);
+            return new Token(TokenType.Identifier, finalString, stream.FilePosition);
         }
 
         public static bool IsValidStringChar(int ch)

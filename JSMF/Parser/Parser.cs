@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using System.Text;
@@ -33,6 +34,7 @@ namespace JSMF.Parser
         {
             return MaybeCall(() =>
             {
+                var _pPos = stream.CurrentPosition();
                 SkipAllLineBreak();
                 if (IsSeparator("("))
                 {
@@ -79,14 +81,14 @@ namespace JSMF.Parser
                 if (IsSeparator("["))
                 {
                     var array = Delimited("[", "]", ",", ParseExpression);
-                    return new NodeArray() { Array = array };
+                    return new NodeArray() { Array = array, FileInfo = _pPos};
                 }
                 if (IsKeyword("if")) return ParseIf();
                 if (IsKeyword("true") || IsKeyword("false")) return ParseBool();
                 if (IsKeyword("null"))
                 {
                     SkipKeyword("null");
-                    return new NodeNull();
+                    return new NodeNull() {FileInfo = _pPos};
                 }
                 if (IsKeyword("function")) return ParseFunction();
                 if (IsKeyword("while")) return ParseWhile();
@@ -101,19 +103,19 @@ namespace JSMF.Parser
                     SkipKeyword("return");
                     var body = IsSeparator(";") ? null : ParseExpression();
                     if (IsSeparator(";")) SkipSeparator(";");
-                    return new NodeReturn { Body = body };
+                    return new NodeReturn { Body = body, FileInfo = _pPos};
                 }
                 if (IsKeyword("break"))
                 {
                     SkipKeyword();
                     if (IsSeparator(";")) SkipSeparator(";");
-                    return new NodeNoValue(NodeType.Break);
+                    return new NodeNoValue(NodeType.Break) { FileInfo = _pPos};
                 }
                 if (IsKeyword("continue"))
                 {
                     SkipKeyword();
                     if (IsSeparator(";")) SkipSeparator(";");
-                    return new NodeNoValue(NodeType.Continue);
+                    return new NodeNoValue(NodeType.Continue) {FileInfo = _pPos};
                 }
                 if (IsKeyword("async"))
                 {
@@ -128,12 +130,12 @@ namespace JSMF.Parser
                 if (IsKeyword("await"))
                 {
                     SkipKeyword("await");
-                    return new NodeAwaitableCall { WaitFor = ParseExpression() };
+                    return new NodeAwaitableCall { WaitFor = ParseExpression(), FileInfo = _pPos};
                 }
                 if (IsKeyword("new"))
                 {
                     SkipKeyword("new");
-                    return new NodeNewObject { Object = ParseExpression() };
+                    return new NodeNewObject { Object = ParseExpression(), FileInfo = _pPos};
                 }
                 if (IsKeyword("class"))
                 {
@@ -150,8 +152,9 @@ namespace JSMF.Parser
                     return new NodeIncDecOperator
                     {
                         AfterVar = false,
-                        Identifier = new NodeIdentifier { Value = nexTok.Value },
-                        Operator = op
+                        Identifier = new NodeIdentifier { Value = nexTok.Value, FileInfo = _pPos},
+                        Operator = op,
+                        FileInfo = _pPos
                     };
                 }
 
@@ -161,23 +164,23 @@ namespace JSMF.Parser
                 {
                     if (IsOperator("=>"))
                     {
-                        return ParseArrowFunction(new List<INode> { new NodeArgument { Value = tok.Value } });
+                        return ParseArrowFunction(new List<INode> { new NodeArgument { Value = tok.Value, FileInfo = _pPos } });
                     }
                     // identifikator objektu nebo pole
                     if (IsSeparator(".") || IsSeparator("["))
                     {
-                        return ParseObjectCall(new NodeIdentifier { Value = tok.Value });
+                        return ParseObjectCall(new NodeIdentifier { Value = tok.Value, FileInfo = _pPos });
                     }
 
-                    return new NodeIdentifier { Value = tok.Value };
+                    return new NodeIdentifier { Value = tok.Value, FileInfo = _pPos};
                 }
                 if (tok.Type == TokenType.String)
                 {
-                    return new NodeString { Value = tok.Value };
+                    return new NodeString { Value = tok.Value, FileInfo = _pPos };
                 }
                 if (tok.Type == TokenType.Numeric)
                 {
-                    return new NodeNumber(Number.Parse(tok.Value));
+                    return new NodeNumber(Number.Parse(tok.Value)) { FileInfo = _pPos };
                 }
 
                 if (IsSeparator(";") || IsSeparator("LB"))
@@ -218,6 +221,7 @@ namespace JSMF.Parser
 
         public INode ParseClassMethod()
         {
+            var _pPos = stream.CurrentPosition();
             var isSatic = IsKeyword("static");
             if (isSatic) SkipKeyword("static");
             var isAsync = IsKeyword("async");
@@ -242,12 +246,14 @@ namespace JSMF.Parser
                 IsAnonymous = false,
                 IsGenerator = isGenerator,
                 IsStatic = isSatic,
-                IsAsync = isAsync
+                IsAsync = isAsync,
+                FileInfo = _pPos
             };
         }
 
         public INode ParseClassProperty(bool isAsync = false)
         {
+            var _pPos = stream.CurrentPosition();
             var isGetter = IsKeyword("get");
             SkipKeyword();
             var name = stream.Next();
@@ -263,21 +269,25 @@ namespace JSMF.Parser
                 IsGetter = isGetter,
                 IsAsync = isAsync,
                 Arguments = args,
-                Name = new NodeIdentifier { Value = name.Value }
+                Name = new NodeIdentifier { Value = name.Value },
+                FileInfo = _pPos
             };
         }
 
         public INode ParseCall(INode funct)
         {
+            var _pPos = stream.CurrentPosition();
             return new NodeCall()
             {
                 Function = funct,
-                Arguments = Delimited("(", ")", ",", ParseExpression)
+                Arguments = Delimited("(", ")", ",", ParseExpression),
+                FileInfo = _pPos
             };
         }
 
         public INode ParseObjectCall(INode objName)
         {
+            var _pPos = stream.CurrentPosition();
             INode child = null;
 
             //if (objName.Type != TokenType.Identifier) Unexpected();
@@ -287,7 +297,7 @@ namespace JSMF.Parser
                 SkipSeparator(".");
                 var ntoken = stream.Next();
                 if (ntoken.Type != TokenType.Identifier) Unexpected();
-                child = ParseObjectCall(new NodeIdentifier { Value = ntoken.Value });
+                child = ParseObjectCall(new NodeIdentifier { Value = ntoken.Value, FileInfo = _pPos});
             }
             if (IsSeparator("["))
             {
@@ -299,7 +309,7 @@ namespace JSMF.Parser
             if (IsSeparator("("))
             {
                 var args = Delimited("(", ")", ",", ParseExpression);
-                child = ParseObjectCall(new NodeCall { Arguments = args, Function = (NodeIdentifier)objName });
+                child = ParseObjectCall(new NodeCall { Arguments = args, Function = (NodeIdentifier)objName, FileInfo = _pPos});
             }
 
             if (child == null) return objName;
@@ -307,7 +317,8 @@ namespace JSMF.Parser
             return new NodeObjectCall
             {
                 Name = objName,
-                Child = child
+                Child = child,
+                FileInfo = _pPos
             };
         }
 
@@ -318,7 +329,9 @@ namespace JSMF.Parser
 
         public INode ParseObject()
         {
-            var obj = new NodeJSObject();
+            var _pPos = stream.CurrentPosition();
+
+            var obj = new NodeJSObject() { FileInfo = _pPos};
             if (IsSeparator("{")) SkipSeparator("{");
             if (IsSeparator("}")) return obj;
 
@@ -330,8 +343,8 @@ namespace JSMF.Parser
                     var nameTok = stream.Next();
                     INode name = null;
 
-                    if (nameTok.Type == TokenType.String) name = new NodeString { Value = nameTok.Value };
-                    else name = new NodeIdentifier { Value = nameTok.Value };
+                    if (nameTok.Type == TokenType.String) name = new NodeString { Value = nameTok.Value, FileInfo = stream.CurrentPosition() };
+                    else name = new NodeIdentifier { Value = nameTok.Value, FileInfo = stream.CurrentPosition() };
                     SkipAllLineBreak();
                     if (IsSeparator(","))
                     {
@@ -364,6 +377,7 @@ namespace JSMF.Parser
 
         public INode ParseClass()
         {
+            var _pPos = stream.CurrentPosition();
             SkipKeyword("class");
             SkipAllLineBreak();
             INode extend = null;
@@ -392,7 +406,8 @@ namespace JSMF.Parser
                 Name = name,
                 Extends = extend,
                 Body = body,
-                IsAnonymous = isAnonymous
+                IsAnonymous = isAnonymous,
+                FileInfo = _pPos
             };
         }
 
@@ -688,7 +703,8 @@ namespace JSMF.Parser
 
         public INode ParseIncDecOperator(INode identifier, bool after = true)
         {
-            var decinc = new NodeIncDecOperator();
+            var _pPos = stream.CurrentPosition();
+            var decinc = new NodeIncDecOperator() { FileInfo = _pPos};
             decinc.Identifier = identifier;
             decinc.Operator = stream.Next().Value;
             decinc.AfterVar = after;
@@ -876,7 +892,7 @@ namespace JSMF.Parser
 
         public void Unexpected()
         {
-            throw new ParserException($"Unexpected token '{stream.Peek().Value}'", stream.Peek().Line, stream.Peek().Column);
+            throw new ParserException($"Unexpected token '{stream.Peek().Value}'", stream.CurrentPosition());
         }
     }
 }

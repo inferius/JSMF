@@ -10,5 +10,7 @@ namespace JSMF.Parser.AST.Nodes
     {
         public NodeType Type { get; } = NodeType.New;
         public INode Object { get; set; }
+
+        public Position FileInfo {get; set; }
     }
 }

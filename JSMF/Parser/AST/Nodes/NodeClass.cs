@@ -14,5 +14,7 @@ namespace JSMF.Parser.AST.Nodes
         public bool IsAnonymous { get; set; }
         public INode Extends { get; set; }
         public INode Body { get; set; }
+
+        public Position FileInfo {get; set; }
     }
 }

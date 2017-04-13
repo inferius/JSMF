@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JSMF.Core;
 using JSMF.Exceptions;
+using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Interpreter
 {
@@ -64,7 +65,7 @@ namespace JSMF.Interpreter
         internal int _iValue;
         internal double _dValue;
         internal object _oValue;
-
+        internal Position _position;
 
         public virtual object Value
         {

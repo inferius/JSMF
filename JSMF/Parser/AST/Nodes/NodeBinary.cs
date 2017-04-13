@@ -1,4 +1,6 @@
-﻿namespace JSMF.Parser.AST.Nodes
+﻿using System;
+
+namespace JSMF.Parser.AST.Nodes
 {
     public class NodeBinary : INode
     {
@@ -6,5 +8,7 @@
         public string Operator { get; set; }
         public INode Left { get; set; }
         public INode Right { get; set; }
+
+        public Position FileInfo {get; set; }
     }
 }

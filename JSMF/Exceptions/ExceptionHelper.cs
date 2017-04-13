@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JSMF.Interpreter;
+using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Exceptions
 {
@@ -17,7 +18,7 @@ namespace JSMF.Exceptions
 
         internal static void ThrowTypeError(string message)
         {
-            Throw(new JSException(message, 0, 0));
+            Throw(new JSException(message, new Position()));
         }
 
         internal static void Throw(Exception exception)

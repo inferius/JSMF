@@ -1,4 +1,6 @@
-﻿namespace JSMF.Parser.AST.Nodes
+﻿using System;
+
+namespace JSMF.Parser.AST.Nodes
 {
     public class NodeForOf : INode
     {
@@ -11,5 +13,7 @@
         public INode VarDef { get; set; }
         public INode Enumerate { get; set; }
         public INode Body { get; set; }
+
+        public Position FileInfo {get; set; }
     }
 }

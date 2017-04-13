@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JSMF.Parser.AST.Nodes
 {
@@ -10,5 +11,7 @@ namespace JSMF.Parser.AST.Nodes
         public INode Body { get; set; }
         public List<INode> Arguments { get; set; }
         public bool IsGetter { get; set; }
+
+        public Position FileInfo {get; set; }
     }
 }

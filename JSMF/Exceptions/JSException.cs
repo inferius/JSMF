@@ -3,24 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Exceptions
 {
     public class JSException: Exception
     {
-        public int Column { get; private set; }
-        public int Line { get; private set; }
+        public Position Position { get; private set; }
 
         public JSException()
         {
-            Column = -1;
-            Line = -1;
+           Position = new Position();
         }
 
-        public JSException(string message, int line, int column) : base($"{message}: at {line + 1}:{column}")
+        public JSException(string message, Position position) : base($"{message}: at {position}")
         {
-            Line = line;
-            Column = column;
+            Position = position;
         }
     }
 }

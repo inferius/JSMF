@@ -1,4 +1,6 @@
-﻿namespace JSMF.Parser.AST.Nodes
+﻿using System;
+
+namespace JSMF.Parser.AST.Nodes
 {
     public class NodeWhile : INode
     {
@@ -6,5 +8,7 @@
         public INode Condition { get; set; }
         public bool IsDoWhile { get; set; } = false;
         public INode Body { get; set; }
+
+        public Position FileInfo {get; set; }
     }
 }

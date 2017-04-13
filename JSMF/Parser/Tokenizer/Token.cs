@@ -1,20 +1,22 @@
-﻿namespace JSMF.Parser.Tokenizer
+﻿using JSMF.Parser.AST.Nodes;
+
+namespace JSMF.Parser.Tokenizer
 {
     public class Token
     {
         public TokenType Type { get; }
         public string Value { get; }
-        public int Line { get; set; } = 0;
-        public int Column { get; set; } = 0;
+        public Position Position { get; }
 
         #region Constructors
-        public Token(TokenType type, string value, int line, int column)
+        public Token(TokenType type, string value, Position position)
         {
             Type = type;
             Value = value;
+            Position = position;
         }
 
-        public Token(TokenType type, char value, int line, int column) : this(type, value.ToString(), line, column)
+        public Token(TokenType type, char value, Position position) : this(type, value.ToString(), position)
         {
         }
         #endregion
@@ -22,11 +24,6 @@
         public override string ToString()
         {
             return $"{Type} => {Value}";
-        }
-
-        public static Token EndToken()
-        {
-            return new Token(TokenType.EndToken, null, 0, 0);
         }
     }
 }

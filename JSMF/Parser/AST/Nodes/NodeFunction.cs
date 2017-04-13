@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace JSMF.Parser.AST.Nodes
@@ -14,6 +15,8 @@ namespace JSMF.Parser.AST.Nodes
 
         public List<INode> Arguments { get; set; } = new List<INode>();
         public INode Body { get; set; }
+
+        public Position FileInfo {get; set; }
 
         public override string ToString()
         {

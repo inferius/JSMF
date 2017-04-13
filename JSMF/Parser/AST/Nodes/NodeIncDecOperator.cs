@@ -12,5 +12,7 @@ namespace JSMF.Parser.AST.Nodes
         public INode Identifier { get; set; }
         public string Operator { get; set; }
         public bool AfterVar { get; set; } = false;
+
+        public Position FileInfo {get; set; }
     }
 }

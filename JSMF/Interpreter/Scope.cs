@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using JSMF.Exceptions;
+using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Interpreter
 {
@@ -52,7 +53,7 @@ namespace JSMF.Interpreter
         {
             var scope = Lookup(name);
 
-            if (scope == null) throw new JSException($"Undefined variable {name}",0,0);
+            if (scope == null) throw new JSException($"Undefined variable {name}", val._position);
             scope.Variables[name].Value = val;
         }
 
@@ -60,7 +61,7 @@ namespace JSMF.Interpreter
         {
             var scope = Lookup(name);
 
-            if (scope == null) throw new JSException($"Undefined variable {name}", 0, 0);
+            if (scope == null) throw new JSException($"Undefined variable {name}", new Position());
             return scope.Variables[name];
         }
 
