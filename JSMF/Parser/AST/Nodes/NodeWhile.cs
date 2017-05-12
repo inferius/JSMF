@@ -1,14 +1,22 @@
 ﻿using System;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeWhile : INode
+    public class NodeWhile : Node
     {
-        public NodeType Type { get; } = NodeType.While;
         public INode Condition { get; set; }
         public bool IsDoWhile { get; set; } = false;
         public INode Body { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeWhile()
+        {
+            Type = NodeType.While;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

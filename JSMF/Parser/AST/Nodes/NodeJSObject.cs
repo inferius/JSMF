@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeJSObject : INode
+    public class NodeJSObject : Node
     {
-        public NodeType Type { get; } = NodeType.JSObject;
-
-        public Position FileInfo {get; set; }
-
         public Dictionary<INode, INode> Values = new Dictionary<INode, INode>();
+
+        public NodeJSObject()
+        {
+            Type = NodeType.JSObject;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeProperty : INode
+    public class NodeProperty : Node
     {
-        public NodeType Type { get; } = NodeType.Property;
         public bool IsAsync { get; set; }
         public INode Name { get; set; }
         public INode Body { get; set; }
         public List<INode> Arguments { get; set; }
         public bool IsGetter { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeProperty()
+        {
+            Type = NodeType.Property;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

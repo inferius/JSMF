@@ -1,17 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeObjectCall : INode
+    public class NodeObjectCall : Node
     {
-        public NodeType Type { get; } = NodeType.ObjectCall;
         public INode Name { get; set; }
         public INode Child { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeObjectCall()
+        {
+            Type = NodeType.ObjectCall;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

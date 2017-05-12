@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeFunction : INode
+    public class NodeFunction : Node
     {
-        public NodeType Type { get; } = NodeType.Function;
         public INode Function { get; set; }
 
         public bool IsGenerator { get; set; } = false;
@@ -16,8 +16,10 @@ namespace JSMF.Parser.AST.Nodes
         public List<INode> Arguments { get; set; } = new List<INode>();
         public INode Body { get; set; }
 
-        public Position FileInfo {get; set; }
-
+        public NodeFunction()
+        {
+            Type = NodeType.Function;
+        }
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -30,6 +32,11 @@ namespace JSMF.Parser.AST.Nodes
             }
 
             return sb.ToString();
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeProgram : INode
+    public class NodeProgram : Node
     {
-        public NodeType Type { get; } = NodeType.Program;
         public List<INode> Program { get; set; } = new List<INode>();
 
-        public Position FileInfo {get; set; }
+        public NodeProgram()
+        {
+            Type = NodeType.Program;
+        }
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

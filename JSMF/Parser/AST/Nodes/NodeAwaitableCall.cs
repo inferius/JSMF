@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeAwaitableCall : INode
+    public class NodeAwaitableCall : Node
     {
-        public NodeType Type { get; } = NodeType.Await;
         public INode WaitFor { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeAwaitableCall()
+        {
+            Type = NodeType.Await;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

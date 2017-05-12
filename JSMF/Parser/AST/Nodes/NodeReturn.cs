@@ -1,12 +1,20 @@
 ﻿using System;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeReturn : INode
+    public class NodeReturn : Node
     {
-        public NodeType Type { get; } = NodeType.Return;
         public INode Body { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeReturn()
+        {
+            Type = NodeType.Return;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

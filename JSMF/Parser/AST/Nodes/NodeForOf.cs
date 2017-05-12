@@ -1,11 +1,10 @@
 ﻿using System;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeForOf : INode
+    public class NodeForOf : Node
     {
-        public NodeType Type { get; } = NodeType.ForOf;
-        
         /// <summary>
         /// Pokud true je ForOf pokud false ForIn
         /// </summary>
@@ -14,6 +13,14 @@ namespace JSMF.Parser.AST.Nodes
         public INode Enumerate { get; set; }
         public INode Body { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeForOf()
+        {
+            Type = NodeType.ForOf;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

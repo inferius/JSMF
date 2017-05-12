@@ -1,17 +1,25 @@
 ﻿using System;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeIdentifier : INode
+    public class NodeIdentifier : Node
     {
-        public NodeType Type { get; } = NodeType.Identifier;
         public string Value { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeIdentifier()
+        {
+            Type = NodeType.Identifier;
+        }
 
         public override string ToString()
         {
             return $"[{Type}]{Value}";
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

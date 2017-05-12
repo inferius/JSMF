@@ -58,6 +58,7 @@
     <Compile Include="Interpreter\Variable.cs" />
     <Compile Include="Parser\AST\AstTreeMethods.cs" />
     <Compile Include="Parser\AST\Nodes\INode.cs" />
+    <Compile Include="Parser\AST\Nodes\Node.cs" />
     <Compile Include="Parser\AST\Nodes\NodeArgument.cs" />
     <Compile Include="Parser\AST\Nodes\NodeArray.cs" />
     <Compile Include="Parser\AST\Nodes\NodeAssing.cs" />

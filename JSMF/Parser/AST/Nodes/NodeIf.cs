@@ -1,14 +1,22 @@
 ﻿using System;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeIf : INode
+    public class NodeIf : Node
     {
-        public NodeType Type { get; } = NodeType.Condition;
         public INode Condition { get; set; }
         public INode Then { get; set; }
         public INode Else { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeIf()
+        {
+            Type=NodeType.Condition;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,14 +1,22 @@
 ﻿using System;
+using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeBinary : INode
+    public class NodeBinary : Node
     {
-        public NodeType Type { get; } = NodeType.Binary;
         public string Operator { get; set; }
         public INode Left { get; set; }
         public INode Right { get; set; }
 
-        public Position FileInfo {get; set; }
+        public NodeBinary()
+        {
+            Type = NodeType.Binary;
+        }
+
+        public override JSValue Evaluate(Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
