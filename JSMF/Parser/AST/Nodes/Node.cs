@@ -10,7 +10,7 @@ namespace JSMF.Parser.AST.Nodes
     public abstract class Node : INode
     {
         public NodeType Type { get; protected set; }
-        public Position FileInfo { get; }
+        public Position FileInfo { get; set; }
 
         public abstract JSValue Evaluate(Scope context);
 
