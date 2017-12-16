@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JSMF</RootNamespace>
     <AssemblyName>JSMF</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +54,7 @@
     <Compile Include="Interpreter\Function.cs" />
     <Compile Include="Interpreter\JSObject.cs" />
     <Compile Include="Interpreter\JSValue.cs" />
+    <Compile Include="Interpreter\Runner.cs" />
     <Compile Include="Interpreter\Scope.cs" />
     <Compile Include="Interpreter\Symbol.cs" />
     <Compile Include="Interpreter\Variable.cs" />

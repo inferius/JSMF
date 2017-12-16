@@ -49,6 +49,18 @@ namespace JSMF.Interpreter
             return null;
         }
 
+        public void SetOrUpdate(Variable var, JSValue val)
+        {
+            var scope = Lookup(var.Name);
+
+            if (scope == null)
+            {
+                Define(var);
+                scope = this;
+            }
+            scope.Variables[var.Name].Value = val;
+        }
+
         public void Set(string name, JSValue val)
         {
             var scope = Lookup(name);

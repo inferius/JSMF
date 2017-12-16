@@ -10,12 +10,6 @@ namespace JSMF.Exceptions
     public class JSException: Exception
     {
         public Position Position { get; private set; }
-
-        public JSException()
-        {
-           Position = new Position();
-        }
-
         public JSException(string message, Position position) : base($"{message}: at {position}")
         {
             Position = position;

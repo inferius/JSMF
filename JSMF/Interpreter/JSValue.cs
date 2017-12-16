@@ -148,6 +148,10 @@ namespace JSMF.Interpreter
             }
         }
 
+        public static JSValue ParseINode(INode data)
+        {
+            return null;
+        }
         
 
         public IEnumerator<KeyValuePair<string, JSValue>> GetEnumerator()

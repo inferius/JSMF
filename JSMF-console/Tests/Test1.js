@@ -41,6 +41,10 @@ async function testAync() {
     return c.ahoj.ppp_sf;
 }
 
+//function* generator() {
+//    yield 42;
+//}
+
 (function(a, b) {
     for (var i = 0, h = 6; i < 10; i++) console.log(i);
     const x = [1, 2, 4, 5, 6];

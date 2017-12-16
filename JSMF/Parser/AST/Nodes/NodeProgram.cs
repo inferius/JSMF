@@ -14,7 +14,15 @@ namespace JSMF.Parser.AST.Nodes
         }
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            var aContext = new Scope(context);
+            foreach (var node in Program)
+            {
+                var result = node.Evaluate(aContext);
+
+                if (node is NodeReturn) return result;
+            }
+
+            return JSValue.undefined;
         }
     }
 }
