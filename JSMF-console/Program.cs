@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using JSMF.Parser;
 using JSMF.Parser.Tokenizer;
 using System.IO;
-using JSMF.Parser.AST.Nodes;
 using JSMF.Interpreter;
-using System.Linq.Expressions;
 
 namespace JSMF_console
 {
@@ -28,14 +22,18 @@ namespace JSMF_console
             var tokenStream = new Parser(new TokenStream(new InputStream(new StreamReader(filePathRelative, Encoding.UTF8), filePathRelative)));
             var result = tokenStream.FullParse();
 
-            using (var scope = new Scope(null))
+            /*using (var scope = new Scope(null))
             {
                 if (result is NodeProgram)
                 {
                     var programResult = result.Evaluate(scope);
                 }
 
-            }
+            }*/
+            
+            Runner runner = new Runner();
+            
+            runner.Run(result);
 
             var tokens = TokenRegistredWords.ReadString(new InputStream("`${aa}ahoj ${ah} \\` ˛ \\` $fsa \\${pp}${ui}`"));
 

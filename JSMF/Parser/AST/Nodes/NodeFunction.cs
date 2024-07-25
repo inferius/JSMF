@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeFunction : Node
+    public class NodeFunction : NodeWithBody
     {
         public INode Function { get; set; }
 
-        public bool IsGenerator { get; set; } = false;
         public bool IsAsync { get; set; } = false;
         public bool IsAnonymous { get; set; } = false;
 
         public List<INode> Arguments { get; set; } = new List<INode>();
-        public INode Body { get; set; }
 
         public NodeFunction()
         {
@@ -25,7 +22,6 @@ namespace JSMF.Parser.AST.Nodes
             var sb = new StringBuilder();
             if (IsAsync) sb.Append("async ");
             sb.Append("function ");
-            if (IsGenerator) sb.Append("* ");
             if (Function is NodeIdentifier)
             {
                 if (!IsAnonymous) sb.Append(((NodeIdentifier) Function).Value);
@@ -36,8 +32,17 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            if (Body == null) return JSValue.undefined;
-            return Body.Evaluate(context);
+            if (IsAnonymous)
+            {
+                
+            }
+            else
+            {
+                context.CreateFunction(((NodeIdentifier)Function).Value, this);
+            }
+            //context.CreateFunction();
+            //if (Body == null) return JSValue.undefined;
+            return JSValue.undefined;
         }
     }
 }

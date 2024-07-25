@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using JSMF.Exceptions;
 using JSMF.Parser.AST.Nodes;
 
@@ -13,6 +9,7 @@ namespace JSMF.Interpreter
     {
         internal Scope Parent { get; set; }
         internal IDictionary<string, Variable> Variables = new Dictionary<string, Variable>();
+        internal IDictionary<string, NodeFunction> Functions = new Dictionary<string, NodeFunction>();
 
         public Scope RootContext
         {
@@ -48,6 +45,23 @@ namespace JSMF.Interpreter
             while (scope != null)
             {
                 if (scope.Variables.ContainsKey(name)) return scope;
+                scope = scope.Parent;
+            }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// Vyhledává funkci v daném kontextu, podle názvu, pokud ji nenajde vrátí null
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Scope LookupFunction(string name)
+        {
+            var scope = this;
+            while (scope != null)
+            {
+                if (scope.Functions.ContainsKey(name)) return scope;
                 scope = scope.Parent;
             }
 
@@ -91,6 +105,19 @@ namespace JSMF.Interpreter
 
             if (scope == null) throw new JSException($"Undefined variable {name}", new Position()); // TODO: Doplnit aktualni pozici, odkud se cetlo, informace v Node je, globalne predavat
             return scope.Variables[name];
+        }
+        
+        public void CreateFunction(string name, NodeFunction function)
+        {
+            Functions[name] = function;
+        }
+        
+        public NodeFunction GetFunction(string name)
+        {
+            var scope = LookupFunction(name);
+
+            if (scope == null) throw new JSException($"Uncaught ReferenceError: {name} is not defined", new Position()); 
+            return scope.Functions[name];
         }
 
         /// <summary>

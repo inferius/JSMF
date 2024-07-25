@@ -1,18 +1,17 @@
-﻿using System;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeNull : Node
+    public class NodeUndefined : Node
     {
-        public NodeNull()
+        public NodeUndefined()
         {
             Type = NodeType.Null;
         }
 
         public override JSValue Evaluate(Scope context)
         {
-            return JSValue.nullValue;
+            return JSValue.undefined;
         }
 
         public override string ToString()

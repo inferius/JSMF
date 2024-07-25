@@ -1,5 +1,4 @@
-﻿using System;
-using JSMF.Interpreter;
+﻿using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
@@ -11,9 +10,14 @@ namespace JSMF.Parser.AST.Nodes
         {
             Type = NodeType.String;
         }
+        
+        public NodeString(string value): this()
+        {
+            Value = value;
+        }
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            return JSValue.ParseINode(this);
         }
 
         public override string ToString()

@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using JSMF.Core;
-using JSMF.Exceptions;
 using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Interpreter
@@ -211,6 +208,13 @@ namespace JSMF.Interpreter
                     return new JSValue() { _valueType = JSValueType.Double, Value = n.Value._dValue, _attributes = JSValueAttributesInternal.DoNotEnumerate};
                 case NodeBoolean n: return new JSValue() { _valueType = JSValueType.Boolean, Value = n.Value, _attributes = JSValueAttributesInternal.DoNotEnumerate };
                 case NodeArray n: return new JSValue() { _valueType = JSValueType.Object, _valueObjectSubtype = JSValueObjectType.ArrayType, Value = n.Array.Select(item => ParseINode(item)).ToArray(), _attributes = JSValueAttributesInternal.None };
+                case NodeFunction n:
+                    return new JSValue
+                    {
+                        _valueType = JSValueType.Function,
+                        Value = n,
+                        _attributes = JSValueAttributesInternal.Eval
+                    };
 
             }
             return null;

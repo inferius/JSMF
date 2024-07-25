@@ -3,12 +3,11 @@ using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeClass : Node
+    public class NodeClass : NodeWithBody
     {
         public INode Name { get; set; }
         public bool IsAnonymous { get; set; }
         public INode Extends { get; set; }
-        public INode Body { get; set; }
 
 
         public NodeClass()

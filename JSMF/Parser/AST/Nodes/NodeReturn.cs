@@ -1,12 +1,9 @@
-﻿using System;
-using JSMF.Interpreter;
+﻿using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeReturn : Node
+    public class NodeReturn : NodeWithBody
     {
-        public INode Body { get; set; }
-
         public NodeReturn()
         {
             Type = NodeType.Return;

@@ -51,6 +51,7 @@
     <Compile Include="Exceptions\EvaluateExceptions\ContinueException.cs" />
     <Compile Include="Exceptions\EvaluateExceptions\EvaluateException.cs" />
     <Compile Include="Exceptions\EvaluateExceptions\ReturnException.cs" />
+    <Compile Include="Exceptions\EvaluateExceptions\YieldException.cs" />
     <Compile Include="Exceptions\ExceptionHelper.cs" />
     <Compile Include="Exceptions\JSException.cs" />
     <Compile Include="Exceptions\ParserException.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Interpreter\Symbol.cs" />
     <Compile Include="Interpreter\Variable.cs" />
     <Compile Include="Parser\AST\AstTreeMethods.cs" />
+    <Compile Include="Parser\AST\Helper\NodeHelpers.cs" />
     <Compile Include="Parser\AST\Nodes\INode.cs" />
     <Compile Include="Parser\AST\Nodes\Node.cs" />
     <Compile Include="Parser\AST\Nodes\NodeArgument.cs" />
@@ -75,12 +77,16 @@
     <Compile Include="Parser\AST\Nodes\NodeCall.cs" />
     <Compile Include="Parser\AST\Nodes\NodeClass.cs" />
     <Compile Include="Parser\AST\Nodes\NodeClassMethod.cs" />
+    <Compile Include="Parser\AST\Nodes\NodeClassMethodGenerator.cs" />
     <Compile Include="Parser\AST\Nodes\NodeFor.cs" />
     <Compile Include="Parser\AST\Nodes\NodeForOf.cs" />
     <Compile Include="Parser\AST\Nodes\NodeFunction.cs" />
+    <Compile Include="Parser\AST\Nodes\NodeGenerator.cs" />
     <Compile Include="Parser\AST\Nodes\NodeIdentifier.cs" />
     <Compile Include="Parser\AST\Nodes\NodeIf.cs" />
     <Compile Include="Parser\AST\Nodes\NodeIncDecOperator.cs" />
+    <Compile Include="Parser\AST\Nodes\NodeJSValue.cs" />
+    <Compile Include="Parser\AST\Nodes\NodeSymbol.cs" />
     <Compile Include="Parser\AST\Nodes\NodeJSObject.cs" />
     <Compile Include="Parser\AST\Nodes\NodeNativeFunction.cs" />
     <Compile Include="Parser\AST\Nodes\NodeNewObject.cs" />
@@ -92,10 +98,13 @@
     <Compile Include="Parser\AST\Nodes\NodeReturn.cs" />
     <Compile Include="Parser\AST\Nodes\NodeString.cs" />
     <Compile Include="Parser\AST\Nodes\NodeType.cs" />
+    <Compile Include="Parser\AST\Nodes\NodeUndefined.cs" />
     <Compile Include="Parser\AST\Nodes\NodeVarDef.cs" />
     <Compile Include="Parser\AST\Nodes\NodeWhile.cs" />
+    <Compile Include="Parser\AST\Nodes\NodeWithBody.cs" />
     <Compile Include="Parser\AST\Nodes\Number.cs" />
     <Compile Include="Parser\AST\Nodes\Position.cs" />
+    <Compile Include="Parser\AST\Nodes\SymbolTypes.cs" />
     <Compile Include="Parser\InputStream.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Tokenizer\Token.cs" />

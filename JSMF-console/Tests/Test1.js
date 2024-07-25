@@ -53,7 +53,7 @@ async function testAync() {
 
     return c.ahoj.ppp_sf;
 }
-
+test();
 //function* generator() {
 //    yield 42;
 //}
@@ -97,6 +97,12 @@ async function testAync() {
         console.log(v);
     }
 })
+
+function two_same_let() {
+    let a = 5;
+    let a = 6;
+    // Syntax error
+}
 /*
 class Test extends Test1 {
     get testGet() { }
@@ -115,4 +121,3 @@ class Test extends Test1 {
     static async testStaticAsync() {
         
     }
-}*/

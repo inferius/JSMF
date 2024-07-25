@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeForOf : Node
+    public class NodeForOf : NodeWithBody
     {
         /// <summary>
         /// Pokud true je ForOf pokud false ForIn
@@ -12,7 +11,6 @@ namespace JSMF.Parser.AST.Nodes
         public bool IsForOf { get; set; } = true;
         public INode VarDef { get; set; }
         public INode Enumerate { get; set; }
-        public INode Body { get; set; }
 
         public NodeForOf()
         {

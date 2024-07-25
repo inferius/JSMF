@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JSMF.Exceptions;
-using JSMF.Parser.AST.Nodes;
+﻿using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Interpreter
 {
@@ -19,7 +13,31 @@ namespace JSMF.Interpreter
 
         public void Run(INode node)
         {
-            node.Evaluate(GlobalScope);
+            if (node is NodeProgram program)
+            {
+                /*foreach (var programLine in program.Program)
+                {
+                    switch (programLine)
+                    {
+                        case NodeCall nodeCall:
+                        case NodeAssing nodeAssing:
+                        //case NodeAwaitableCall nodeAwaitableCall:
+                            programLine.Evaluate(GlobalScope);
+                            break;
+                    }
+                }*/
+                program.Evaluate(GlobalScope);
+            }
+            
+        }
+        
+        public static JSValue RunInScope(INode node, Scope scope)
+        {
+            if (node is NodeProgram program)
+            {
+                return program.Evaluate(scope);
+            }
+            return JSValue.undefined;
         }
     }
 }

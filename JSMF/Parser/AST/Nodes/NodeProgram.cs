@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
     public class NodeProgram : Node
     {
+        public INode Caller { get; set; }
         public List<INode> Program { get; set; } = new List<INode>();
 
         public NodeProgram()
@@ -14,6 +14,10 @@ namespace JSMF.Parser.AST.Nodes
         }
         public override JSValue Evaluate(Scope context)
         {
+            /*if (Caller is NodeGenerator generator)
+            {
+                return JSValue.ParseINode(generator.Next(context));
+            }*/
             var aContext = new Scope(context);
             try
             {
@@ -25,6 +29,10 @@ namespace JSMF.Parser.AST.Nodes
                 }
             }
             catch (Exceptions.EvaluateExceptions.ReturnException e)
+            {
+                return e.ReturnValue;
+            }
+            catch (Exceptions.EvaluateExceptions.YieldException e)
             {
                 return e.ReturnValue;
             }

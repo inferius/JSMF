@@ -1,15 +1,16 @@
-﻿using JSMF.Interpreter;
+using JSMF.Interpreter;
 
 namespace JSMF.Exceptions.EvaluateExceptions
 {
-    public class ReturnException : EvaluateException
+    public class YieldException : EvaluateException
     {
         private JSValue _returnValue;
         public JSValue ReturnValue => _returnValue;
 
-        public ReturnException(Scope currentScope, JSValue returnValue) : base(currentScope, "Return")
+        public YieldException(Scope currentScope, JSValue returnValue) : base(currentScope, "Yield")
         {
             _returnValue = returnValue;
         }
     }
+
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using JSMF.Interpreter;
+﻿using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
@@ -10,6 +9,11 @@ namespace JSMF.Parser.AST.Nodes
         public NodeIdentifier()
         {
             Type = NodeType.Identifier;
+        }
+        
+        public NodeIdentifier(string value): this()
+        {
+            Value = value;
         }
 
         public override string ToString()

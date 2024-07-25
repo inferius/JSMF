@@ -1,18 +1,16 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.IsolatedStorage;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using JSMF.Exceptions;
 using JSMF.Parser.AST;
 using JSMF.Parser.AST.Nodes;
 using JSMF.Parser.Tokenizer;
+
+/*
+TODO: Je potreba zkontrolovat a upravit parser, aby odpovidal specifikaci jazyka
+TODO: [SyntaxError] Resit redeclaration of let/const
+TODO: [SyntaxError] Unexpected strict mode reserved word (yield pouziti v normlani funkci)
+ */
 
 namespace JSMF.Parser
 {
@@ -238,13 +236,26 @@ namespace JSMF.Parser
             if (!IsSeparator("{")) Unexpected();
             var body = ParseProgram();
 
+            if (isGenerator)
+            {
+                return new NodeClassMethodGenerator
+                {
+                    Arguments = args,
+                    Body = body,
+                    Function = new NodeIdentifier { Value = name.Value },
+                    IsAnonymous = false,
+                    IsStatic = isSatic,
+                    IsAsync = isAsync,
+                    FileInfo = _pPos
+                };
+            }
+
             return new NodeClassMethod
             {
                 Arguments = args,
                 Body = body,
                 Function = new NodeIdentifier { Value = name.Value },
                 IsAnonymous = false,
-                IsGenerator = isGenerator,
                 IsStatic = isSatic,
                 IsAsync = isAsync,
                 FileInfo = _pPos
@@ -641,11 +652,22 @@ namespace JSMF.Parser
             var args = Delimited("(", ")", ",", ParseArgument);
             var body = ParseProgram();
 
+            if (isGenerator)
+            {
+                return new NodeGenerator()
+                {
+                    IsAsync = isAsync,
+                    IsAnonymous = isAnonym,
+                    Function = name,
+                    Arguments = args,
+                    Body = body,
+                    FileInfo = _pPos
+                };
+            }
             return new NodeFunction()
             {
                 IsAsync = isAsync,
                 IsAnonymous = isAnonym,
-                IsGenerator = isGenerator,
                 Function = name,
                 Arguments = args,
                 Body = body,

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
@@ -19,24 +18,58 @@ namespace JSMF.Parser.AST.Nodes
         {
             if (Function is NodeFunction nodeFunction)
             {
-                using (var functionContext = context.Extend())
-                {
-                    var i = 0;
-                    foreach (NodeIdentifier arg in nodeFunction.Arguments)
-                    {
-                        functionContext.Define(new Variable { Name = arg.Value, Value = Arguments.Count <= i ? JSValue.undefined : JSValue.ParseINode(Arguments[i]), VarType = VarType.Let });
-                    }
-
-                    nodeFunction?.Body?.Evaluate(functionContext);
-                }
+                return CallFunction(context, nodeFunction);
             }
-            else if (Function is NodeNativeFunction nodeNativeFunction)
+
+            if (Function is NodeNativeFunction nodeNativeFunction)
             {
                 nodeNativeFunction.Arguments = Arguments;
                 return nodeNativeFunction.Evaluate(context);
             }
 
+            if (Function is NodeIdentifier nodeIdentifier)
+            {
+                var fnc = context.GetFunction(nodeIdentifier.Value);
+                return CallFunction(context, fnc);
+            }
+
             return JSValue.undefined;
         }
+        
+        private JSValue CallFunction(Scope context, NodeFunction nodeFunction)
+        {
+            using (var functionContext = context.Extend())
+            {
+                var i = 0;
+                var argsObject = new NodeJSObject();
+                //var objectScope = new Scope { Parent = context.RootContext };
+                argsObject.Values.Add(new NodeString("length"), new NodeNumber(Arguments.Count));
+                // TODO: Zpracovat Symboly a generatory
+                //argsObject.Values.Add(new NodeSymbol(SymbolTypes.Iterator), new NodeFunction { IsGenerator = true, Body = new NodeBlock { Statements = new List<INode> { new NodeSymbol(SymbolTypes.Yield, new NodeIdentifier("this")) } };
+                argsObject.Values.Add(new NodeString("callee"), Function);
+
+                foreach (NodeIdentifier nodeIdentifier in nodeFunction.Arguments)
+                {
+                    functionContext.Define(new Variable { Name = nodeIdentifier.Value, Value = JSValue.undefined, VarType = VarType.Let });
+                }
+                 
+                foreach (INode arg in Arguments)
+                {
+                    if (i < nodeFunction.Arguments.Count)
+                    {
+                        var identifier = nodeFunction.Arguments[i] as NodeIdentifier;
+                        functionContext.SetOrUpdate(functionContext.Get(identifier.Value), JSValue.ParseINode(Arguments[i]));
+                    }
+                    
+                    argsObject.Values.Add(new NodeNumber(i), Arguments[i]);
+                    i++;
+                }
+
+                functionContext.Define(new Variable { Name = "arguments", Value = JSValue.ParseINode(argsObject), VarType = VarType.Let });
+                return Runner.RunInScope(nodeFunction.Body, functionContext);
+            }
+        }
     }
+    
+    
 }

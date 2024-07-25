@@ -1,5 +1,4 @@
-﻿using System;
-using JSMF.Interpreter;
+﻿using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {

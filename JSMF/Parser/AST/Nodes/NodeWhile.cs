@@ -1,13 +1,11 @@
-﻿using System;
-using JSMF.Interpreter;
+﻿using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
-    public class NodeWhile : Node
+    public class NodeWhile : NodeWithBody
     {
         public INode Condition { get; set; }
         public bool IsDoWhile { get; set; } = false;
-        public INode Body { get; set; }
 
         public NodeWhile()
         {

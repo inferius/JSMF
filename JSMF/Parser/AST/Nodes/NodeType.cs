@@ -25,6 +25,9 @@
         While,
         ForOf,
         For,
-        IncDecOperator
+        IncDecOperator,
+        Symbol,
+        Generator,
+        JSValue
     }
 }

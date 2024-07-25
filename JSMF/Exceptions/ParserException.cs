@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JSMF.Parser.AST.Nodes;
+﻿using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Exceptions
 {

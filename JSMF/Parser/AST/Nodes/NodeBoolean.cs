@@ -1,5 +1,4 @@
-﻿using System;
-using JSMF.Interpreter;
+﻿using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
@@ -10,6 +9,11 @@ namespace JSMF.Parser.AST.Nodes
         public NodeBoolean()
         {
             Type = NodeType.Boolean;
+        }
+        
+        public NodeBoolean(bool value) : this()
+        {
+            Value = value;
         }
 
         public override string ToString()
