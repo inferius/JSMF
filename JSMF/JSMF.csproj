@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JSMF</RootNamespace>
     <AssemblyName>JSMF</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -47,6 +47,10 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Tools.cs" />
+    <Compile Include="Exceptions\EvaluateExceptions\BreakException.cs" />
+    <Compile Include="Exceptions\EvaluateExceptions\ContinueException.cs" />
+    <Compile Include="Exceptions\EvaluateExceptions\EvaluateException.cs" />
+    <Compile Include="Exceptions\EvaluateExceptions\ReturnException.cs" />
     <Compile Include="Exceptions\ExceptionHelper.cs" />
     <Compile Include="Exceptions\JSException.cs" />
     <Compile Include="Exceptions\ParserException.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="Parser\AST\Nodes\NodeIf.cs" />
     <Compile Include="Parser\AST\Nodes\NodeIncDecOperator.cs" />
     <Compile Include="Parser\AST\Nodes\NodeJSObject.cs" />
+    <Compile Include="Parser\AST\Nodes\NodeNativeFunction.cs" />
     <Compile Include="Parser\AST\Nodes\NodeNewObject.cs" />
     <Compile Include="Parser\AST\Nodes\NodeNull.cs" />
     <Compile Include="Parser\AST\Nodes\NodeNumber.cs" />

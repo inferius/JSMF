@@ -15,11 +15,18 @@ namespace JSMF.Parser.AST.Nodes
         public override JSValue Evaluate(Scope context)
         {
             var aContext = new Scope(context);
-            foreach (var node in Program)
+            try
             {
-                var result = node.Evaluate(aContext);
+                foreach (var node in Program)
+                {
+                    node.Evaluate(aContext);
 
-                if (node is NodeReturn) return result;
+                    //if (node is NodeReturn) return result;
+                }
+            }
+            catch (Exceptions.EvaluateExceptions.ReturnException e)
+            {
+                return e.ReturnValue;
             }
 
             return JSValue.undefined;

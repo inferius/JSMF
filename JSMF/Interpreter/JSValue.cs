@@ -14,6 +14,7 @@ namespace JSMF.Interpreter
     {
         NotExists = 0,
         NotExistsInObject = 1,
+        Null = 2,
         Undefined = 3,                          // 000000000011 // nedefinovaný hodnota znamená, že objekt je ve skutečnosti definován, ale jeho hodnota není
         Boolean = 4 | Undefined,                // 000000000111
         Integer = 8 | Undefined,                // 000000001011
@@ -25,6 +26,13 @@ namespace JSMF.Interpreter
         Date = 512 | Undefined,                 // 001000000011
         Property = 1024 | Undefined,            // 010000000011
         SpreadOperatorResult = 2048 | Undefined // 100000000011
+    }
+
+    public enum JSValueObjectType
+    {
+        ArrayType = 2,
+        ClassType = 4,
+        JsonType = 8,
     }
 
     [Flags]
@@ -59,9 +67,11 @@ namespace JSMF.Interpreter
     public class JSValue : IEnumerable<KeyValuePair<string, JSValue>>, IComparable<JSValue>
     {
         internal static readonly JSValue undefined = new JSValue() { _valueType = JSValueType.Undefined, _attributes = JSValueAttributesInternal.DoNotDelete | JSValueAttributesInternal.DoNotEnumerate | JSValueAttributesInternal.ReadOnly | JSValueAttributesInternal.NonConfigurable | JSValueAttributesInternal.SystemObject };
+        internal static readonly JSValue nullValue = new JSValue() { _valueType = JSValueType.Null, _attributes = JSValueAttributesInternal.DoNotDelete | JSValueAttributesInternal.DoNotEnumerate | JSValueAttributesInternal.ReadOnly | JSValueAttributesInternal.NonConfigurable | JSValueAttributesInternal.SystemObject };
 
         internal JSValueAttributesInternal _attributes;
         internal JSValueType _valueType;
+        internal JSValueObjectType _valueObjectSubtype;
         internal int _iValue;
         internal double _dValue;
         internal object _oValue;
@@ -94,6 +104,7 @@ namespace JSMF.Interpreter
                             return _oValue;
                         }
                     case JSValueType.Undefined:
+                    case JSValueType.Null:
                     case JSValueType.NotExistsInObject:
                     default:
                         return null;
@@ -132,10 +143,51 @@ namespace JSMF.Interpreter
                             break;
                         }
                     case JSValueType.Undefined:
+                    case JSValueType.Null:
                     case JSValueType.NotExistsInObject:
                     default:
                         throw new InvalidOperationException();
                 }
+            }
+        }
+
+        internal bool IsTrue()
+        {
+            switch (_valueType)
+            {
+                case JSValueType.Boolean:
+                case JSValueType.Integer:
+                    {
+                        if (_iValue == 0)
+                            return false;
+                        return true;
+                    }
+                case JSValueType.Double:
+                    {
+                        if (_dValue == 0)
+                            return false;
+                        return true;
+                    }
+                case JSValueType.String:
+                    {
+                        if (_oValue == null || _oValue.ToString() == "")
+                            return false;
+                        return true;
+                    }
+                case JSValueType.Object:
+                case JSValueType.Function:
+                case JSValueType.Property:
+                case JSValueType.Date:
+                    {
+                        if (_oValue == null)
+                            return false;
+                        return true;
+                    }
+                case JSValueType.Undefined:
+                case JSValueType.Null:
+                case JSValueType.NotExistsInObject:
+                default:
+                    return false;
             }
         }
 
@@ -150,9 +202,38 @@ namespace JSMF.Interpreter
 
         public static JSValue ParseINode(INode data)
         {
+            switch (data)
+            {
+                case NodeNull n:
+                    return JSValue.nullValue;
+                case NodeNumber n: 
+                    if (n.Value.IsInteger) return new JSValue() { _valueType = JSValueType.Integer, Value = n.Value._iValue, _attributes = JSValueAttributesInternal.DoNotEnumerate };
+                    return new JSValue() { _valueType = JSValueType.Double, Value = n.Value._dValue, _attributes = JSValueAttributesInternal.DoNotEnumerate};
+                case NodeBoolean n: return new JSValue() { _valueType = JSValueType.Boolean, Value = n.Value, _attributes = JSValueAttributesInternal.DoNotEnumerate };
+                case NodeArray n: return new JSValue() { _valueType = JSValueType.Object, _valueObjectSubtype = JSValueObjectType.ArrayType, Value = n.Array.Select(item => ParseINode(item)).ToArray(), _attributes = JSValueAttributesInternal.None };
+
+            }
             return null;
         }
-        
+
+        public override string ToString()
+        {
+            if (_valueType == JSValueType.Object)
+            {
+                if (_oValue is IEnumerable arrayData)
+                {
+                    var sb = new StringBuilder("[");
+                    foreach (var item in arrayData)
+                    {
+                        sb.Append(item.ToString());
+                    }
+                    sb.Append("]");
+                }
+            }
+
+            return Value.ToString();
+        }
+
 
         public IEnumerator<KeyValuePair<string, JSValue>> GetEnumerator()
         {

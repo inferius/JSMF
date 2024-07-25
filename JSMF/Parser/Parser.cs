@@ -727,7 +727,7 @@ namespace JSMF.Parser
         {
             var _pPos = stream.CurrentPosition();
             var decinc = new NodeIncDecOperator() { FileInfo = _pPos};
-            decinc.Identifier = identifier;
+            decinc.Identifier = identifier as NodeIdentifier;
             decinc.Operator = stream.Next().Value;
             decinc.AfterVar = after;
 

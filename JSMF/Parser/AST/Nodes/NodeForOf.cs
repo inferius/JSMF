@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
@@ -20,7 +21,29 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            if (VarDef is NodeIdentifier varName && Enumerate is NodeIdentifier varEnumerate)
+            {
+                if (IsForOf)
+                {
+                    var array = context.Get(varEnumerate.Value);
+
+                    if (array.Value._oValue is IEnumerable arrayData)
+                    {
+                        var c = new Scope(context);
+                        foreach (var item in arrayData)
+                        {
+                            c.SetOrUpdate(new Variable { Name = varName.Value, VarType = VarType.Let }, (JSValue)item);
+                            if (Body is NodeProgram)
+                            {
+                                Body.Evaluate(c);
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return JSValue.undefined;
         }
     }
 }

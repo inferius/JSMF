@@ -13,6 +13,16 @@ var z = 5, zz = 6;
 
 function test(ss) {
     while (true) {
+        /*
+        TODO: Fix syntax error z++ == 5 a ++z == 5, pada na syntax error
+        if (z++ == 5) {
+            continue;
+        }
+        z = 5;
+        if (++z == 5) {
+            break;
+        }
+        */
         break;
     }
     z++;

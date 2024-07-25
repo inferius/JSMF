@@ -1,11 +1,12 @@
 ﻿using System;
+using JSMF.Exceptions;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
 {
     public class NodeIncDecOperator : Node
     {
-        public INode Identifier { get; set; }
+        public NodeIdentifier Identifier { get; set; }
         public string Operator { get; set; }
         public bool AfterVar { get; set; } = false;
 
@@ -16,7 +17,36 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            var val = context.Get(Identifier.Value);
+            if (val.Value.ValueType == JSValueType.Integer || val.Value.ValueType == JSValueType.Double)
+            {
+                if (val.Value.ValueType == JSValueType.Integer)
+                {
+                    if (Operator == "++")
+                    {
+                        val.Value._iValue++;
+                    }
+                    else
+                    {
+                        val.Value._iValue--;
+                    }
+                }
+                else
+                {
+                    if (Operator == "++")
+                    {
+                        val.Value._dValue++;
+                    }
+                    else
+                    {
+                        val.Value._dValue--;
+                    }
+                }
+
+                context.Set(Identifier.Value, val.Value);
+            }
+
+            return val.Value;
         }
     }
 }

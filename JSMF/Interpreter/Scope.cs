@@ -9,7 +9,7 @@ using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Interpreter
 {
-    public class Scope
+    public class Scope : IDisposable
     {
         internal Scope Parent { get; set; }
         internal IDictionary<string, Variable> Variables = new Dictionary<string, Variable>();
@@ -20,7 +20,7 @@ namespace JSMF.Interpreter
             {
                 var res = this;
 
-                while (res.Parent?.Parent != null)
+                while (res?.Parent != null)
                     res = res.Parent;
 
                 return res;
@@ -37,18 +37,28 @@ namespace JSMF.Interpreter
             return new Scope(this);
         }
 
+        /// <summary>
+        /// Vyhledává proměnou v daném kontextu, podle názvu, pokud ji nenajde vrátí null
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Scope Lookup(string name)
         {
             var scope = this;
             while (scope != null)
             {
-                if (Variables.ContainsKey(name)) return scope;
+                if (scope.Variables.ContainsKey(name)) return scope;
                 scope = scope.Parent;
             }
 
             return null;
         }
 
+        /// <summary>
+        /// Vytvoří nebo aktualizuje hodnotu stávající proměnné.
+        /// </summary>
+        /// <param name="var"></param>
+        /// <param name="val"></param>
         public void SetOrUpdate(Variable var, JSValue val)
         {
             var scope = Lookup(var.Name);
@@ -61,6 +71,12 @@ namespace JSMF.Interpreter
             scope.Variables[var.Name].Value = val;
         }
 
+        /// <summary>
+        /// Nastavuje hodotu proměnné.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="val"></param>
+        /// <exception cref="JSException">Pokud proměnná neexistuje</exception>
         public void Set(string name, JSValue val)
         {
             var scope = Lookup(name);
@@ -73,13 +89,23 @@ namespace JSMF.Interpreter
         {
             var scope = Lookup(name);
 
-            if (scope == null) throw new JSException($"Undefined variable {name}", new Position());
+            if (scope == null) throw new JSException($"Undefined variable {name}", new Position()); // TODO: Doplnit aktualni pozici, odkud se cetlo, informace v Node je, globalne predavat
             return scope.Variables[name];
         }
 
+        /// <summary>
+        /// Vytvoří prázdnou proměnnou
+        /// </summary>
+        /// <param name="var"></param>
         public void Define(Variable var)
         {
             Variables[var.Name] = var;
+        }
+
+        public void Dispose()
+        {
+            Variables.Clear();
+            Variables = null;
         }
     }
 }

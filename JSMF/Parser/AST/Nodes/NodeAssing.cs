@@ -16,7 +16,13 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            if (Left is NodeVarDef nvd)
+            {
+                var var = new Variable {Name = nvd.Value, VarType = (VarType)Enum.Parse(typeof(VarType), nvd.VarType, true)};
+                context.SetOrUpdate(var, JSValue.ParseINode(Right));
+            }
+
+            return JSValue.undefined;
         }
 
         public override string ToString()

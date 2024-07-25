@@ -24,10 +24,15 @@ namespace JSMF.Interpreter
                 {
                     throw new ArgumentException("Assignment to constant variable.");
                 }
-
+                            
                 _initialized = true;
                 _value = value;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{VarType} {Name} = {Value}";
         }
     }
 

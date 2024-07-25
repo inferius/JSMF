@@ -19,7 +19,7 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            return JSValue.ParseINode(this);
         }
     }
 }

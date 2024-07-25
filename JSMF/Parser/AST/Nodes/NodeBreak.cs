@@ -16,7 +16,18 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            if (Type == NodeType.Break)
+            {
+                throw new Exceptions.EvaluateExceptions.BreakException(context);
+            }
+            else if (Type == NodeType.Continue)
+            {
+                throw new Exceptions.EvaluateExceptions.ContinueException(context);
+            }
+            else
+            {
+                return JSValue.undefined;
+            }
         }
     }
 }

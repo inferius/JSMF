@@ -4,19 +4,19 @@ namespace JSMF.Parser.AST.Nodes
 {
     public class Number
     {
-        private readonly int _iValue;
-        private readonly double _dValue;
-        private readonly bool isInteger = false;
+        internal readonly int _iValue;
+        internal readonly double _dValue;
+        internal readonly bool IsInteger = false;
 
         public Number(int value)
         {
-            isInteger = true;
+            IsInteger = true;
             _iValue = value;
         }
 
         public Number(double value)
         {
-            isInteger = false;
+            IsInteger = false;
             _dValue = value;
         }
 
@@ -39,19 +39,19 @@ namespace JSMF.Parser.AST.Nodes
 
         public static implicit operator int(Number value)
         {
-            if (value.isInteger) return value._iValue;
+            if (value.IsInteger) return value._iValue;
             return (int) value._dValue;
         }
 
         public static implicit operator double(Number value)
         {
-            if (value.isInteger) return value._iValue;
+            if (value.IsInteger) return value._iValue;
             return value._dValue;
         }
 
         public override string ToString()
         {
-            if (isInteger) return _iValue.ToString(CultureInfo.InvariantCulture);
+            if (IsInteger) return _iValue.ToString(CultureInfo.InvariantCulture);
             return _dValue.ToString(CultureInfo.InvariantCulture);
         }
     }

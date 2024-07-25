@@ -15,7 +15,12 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            //if (((NodeIdentifier)Name).Value == "console" && ((NodeObjectCall)Child).Name.Value == "log")
+            {
+                return Child.Evaluate(context);
+            }
+            // ignored
+            //return JSValue.undefined;
         }
     }
 }

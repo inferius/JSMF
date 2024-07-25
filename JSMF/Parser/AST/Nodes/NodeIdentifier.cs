@@ -19,7 +19,11 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            var v = context.Get(Value);
+            // TODO: Zvazit jestli vracet undefined nebo chybu (zkontrolovat dokumentaci)
+            if (v == null) return JSValue.undefined;
+
+            return v.Value;
         }
     }
 }
