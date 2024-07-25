@@ -1,4 +1,4 @@
-﻿var a = 0;
+var a = 0;
 const cstr = `ahoj ${a} test`
 var ac = 56;
 var c = {
@@ -62,6 +62,38 @@ async function testAync() {
         console.log(v);
     }
 })(1, 2);
+
+(async function (a, b) {
+    for (var i = 0, h = 6; i < 10; i++) console.log(i);
+    const x = [1, 2, 4, 5, 6];
+    for (const v of x) {
+        console.log(v);
+    }
+})(1, 2);
+
+((a, b) => {
+    for (var i = 0, h = 6; i < 10; i++) console.log(i);
+    const x = [1, 2, 4, 5, 6];
+    for (const v of x) {
+        console.log(v);
+    }
+})(1, 2);
+
+(async (a, b) => {
+    for (var i = 0, h = 6; i < 10; i++) console.log(i);
+    const x = [1, 2, 4, 5, 6];
+    for (const v of x) {
+        console.log(v);
+    }
+})(1, 2);
+
+(async (a, b) => {
+    for (var i = 0, h = 6; i < 10; i++) console.log(i);
+    const x = [1, 2, 4, 5, 6];
+    for (const v of x) {
+        console.log(v);
+    }
+})
 /*
 class Test extends Test1 {
     get testGet() { }
