@@ -249,5 +249,104 @@ namespace JSMF.Interpreter
         {
             throw new NotImplementedException();
         }
+
+        #region Operators
+        #region Operator +
+        public static JSValue operator +(JSValue a, JSValue b)
+        {
+            var r = new JSValue();
+
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Integer;
+                    r.Value = a._iValue + b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._iValue + b._dValue;
+                }
+                else if (b.ValueType == JSValueType.String)
+                {
+                    r.ValueType = JSValueType.String;
+                    r.Value = a._iValue.ToString() + b._oValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue + b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue + b._dValue;
+                }
+                else if (b.ValueType == JSValueType.String)
+                {
+                    r.ValueType = JSValueType.String;
+                    r.Value = a._dValue.ToString() + b._oValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.String)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.String;
+                    r.Value = a._oValue + b._iValue.ToString();
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.String;
+                    r.Value = a._oValue + b._dValue.ToString();
+                }
+                else if (b.ValueType == JSValueType.String)
+                {
+                    r.ValueType = JSValueType.String;
+                    r.Value = (string)a._oValue + (string)b._oValue;
+                }
+            }
+            return r;
+        }
+        #endregion
+        #region Operator -
+        public static JSValue operator -(JSValue a, JSValue b)
+        {
+            var r = new JSValue();
+
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Integer;
+                    r.Value = a._iValue - b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._iValue - b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue - b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue - b._dValue;
+                }
+            }
+            return r;
+        }
+        #endregion
+        #endregion
     }
 }

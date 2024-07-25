@@ -8,10 +8,12 @@ var c = {
     },
     "aaa": "sfs"
 }
+let x = 5;
 
 var z = 5, zz = 6;
 
 function test(ss) {
+    let test = 55;
     while (true) {
         /*
         TODO: Fix syntax error z++ == 5 a ++z == 5, pada na syntax error
@@ -27,7 +29,8 @@ function test(ss) {
     }
     z++;
     ++z;
-    return tes;
+    // return tes; // Vraci korektne undefined variable
+    return test + z;
 }
 
 async function testAync() {
