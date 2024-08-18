@@ -23,7 +23,7 @@ namespace JSMF.Parser.AST.Nodes
             {
                 if (IsForOf)
                 {
-                    var array = context.Get(varEnumerate.Value);
+                    var array = context.Get(varEnumerate.Value, FileInfo);
 
                     if (array.Value._oValue is IEnumerable arrayData)
                     {

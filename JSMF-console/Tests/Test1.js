@@ -54,6 +54,17 @@ async function testAync() {
     return c.ahoj.ppp_sf;
 }
 test();
+console.log(cstr); // vystup "ahoj 0 test"
+a = 5;
+console.log(cstr);  // vystup "ahoj 0 test"
+
+let strtest = 5;
+const getCstr = () => `ahoj ${strtest} test`;
+console.log(getCstr());  // Výstup: "ahoj 5 test"
+
+strtest = 10;
+console.log(getCstr());  // Výstup: "ahoj 10 test"
+
 //function* generator() {
 //    yield 42;
 //}

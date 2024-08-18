@@ -99,11 +99,11 @@ namespace JSMF.Interpreter
             scope.Variables[name].Value = val;
         }
 
-        public Variable Get(string name)
+        public Variable Get(string name, Position? callerPosition)
         {
             var scope = Lookup(name);
 
-            if (scope == null) throw new JSException($"Undefined variable {name}", new Position()); // TODO: Doplnit aktualni pozici, odkud se cetlo, informace v Node je, globalne predavat
+            if (scope == null) throw new JSException($"Undefined variable {name}", callerPosition ?? new Position()); // TODO: Doplnit aktualni pozici, odkud se cetlo, informace v Node je, globalne predavat
             return scope.Variables[name];
         }
         
@@ -112,11 +112,11 @@ namespace JSMF.Interpreter
             Functions[name] = function;
         }
         
-        public NodeFunction GetFunction(string name)
+        public NodeFunction GetFunction(string name, Position? callerPosition)
         {
             var scope = LookupFunction(name);
 
-            if (scope == null) throw new JSException($"Uncaught ReferenceError: {name} is not defined", new Position()); 
+            if (scope == null) throw new JSException($"Uncaught ReferenceError: {name} is not defined", callerPosition ?? new Position()); 
             return scope.Functions[name];
         }
 

@@ -21,6 +21,10 @@ namespace JSMF.Parser.AST.Nodes
                 var var = new Variable {Name = nvd.Value, VarType = (VarType)Enum.Parse(typeof(VarType), nvd.VarType, true)};
                 context.SetOrUpdate(var, JSValue.ParseINode(Right));
             }
+            else if (Left is NodeIdentifier nodeIdentifier)
+            {
+                context.SetOrUpdate(context.Get(nodeIdentifier.Value, FileInfo), JSValue.ParseINode(Right));
+            }
 
             return JSValue.undefined;
         }

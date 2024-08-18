@@ -633,7 +633,7 @@ namespace JSMF.Parser
                 IsAsync = isAsync,
                 IsAnonymous = true,
                 Arguments = args,
-                Body = IsSeparator("{") ? ParseProgram() : new NodeReturn { Body = ParseExpression() },
+                Body = IsSeparator("{") ? ParseProgram() : new NodeProgram() { Program = [new NodeReturn { Body = ParseExpression() }] },
                 FileInfo = _pPos
             };
         }

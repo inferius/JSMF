@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +49,8 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Tools.cs" />
+    <Compile Include="EventArgs\ConsoleEventArgs.cs" />
+    <Compile Include="EventArgs\ConsoleEventArgsType.cs" />
     <Compile Include="Exceptions\EvaluateExceptions\BreakException.cs" />
     <Compile Include="Exceptions\EvaluateExceptions\ContinueException.cs" />
     <Compile Include="Exceptions\EvaluateExceptions\EvaluateException.cs" />
@@ -56,6 +60,7 @@
     <Compile Include="Exceptions\JSException.cs" />
     <Compile Include="Exceptions\ParserException.cs" />
     <Compile Include="Interpreter\Arguments.cs" />
+    <Compile Include="Interpreter\BaseLibrary\GlobalScopeCreator.cs" />
     <Compile Include="Interpreter\Function.cs" />
     <Compile Include="Interpreter\JSObject.cs" />
     <Compile Include="Interpreter\JSValue.cs" />
@@ -104,6 +109,7 @@
     <Compile Include="Parser\AST\Nodes\NodeWithBody.cs" />
     <Compile Include="Parser\AST\Nodes\Number.cs" />
     <Compile Include="Parser\AST\Nodes\Position.cs" />
+    <Compile Include="Parser\AST\Nodes\PredefinedNativeFuncions\NodeNativeConsole.cs" />
     <Compile Include="Parser\AST\Nodes\SymbolTypes.cs" />
     <Compile Include="Parser\InputStream.cs" />
     <Compile Include="Parser\Parser.cs" />
@@ -118,9 +124,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interpreter\BaseLibrary\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

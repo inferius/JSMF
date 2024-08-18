@@ -1,8 +1,12 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using JSMF.Parser;
 using JSMF.Parser.Tokenizer;
 using System.IO;
+using JSMF.Core;
+using JSMF.EventArgs;
 using JSMF.Interpreter;
+using JSMF.Interpreter.BaseLibrary;
 
 namespace JSMF_console
 {
@@ -30,8 +34,9 @@ namespace JSMF_console
                 }
 
             }*/
+
+            var runner = Initialize();
             
-            Runner runner = new Runner();
             
             runner.Run(result);
 
@@ -39,9 +44,23 @@ namespace JSMF_console
 
         }
 
-        static void registerGlobalData(Scope context)
+        static Runner Initialize()
         {
+            GlobalScopeCreator globalScopeCreator = new GlobalScopeCreator();
+            Runner runner = new Runner(globalScopeCreator.GlobalScope);
             //context.Define(new Variable { Name = "console", VarType = VarType.Let, Value });
+            Runner.ConsoleEvents += new EventHandler<ConsoleEventArgs>((sender, e) =>
+            {
+                if (e.Type == ConsoleEventArgsType.ConsoleLog)
+                {
+                    foreach (var arg in e.Arguments)
+                    {
+                        Console.WriteLine(Tools.Printer(arg, e.CurrentScope, e.GlobalScope));
+                    }
+                }
+            });
+                
+            return runner;
         }
     }
 }

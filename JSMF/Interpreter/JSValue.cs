@@ -12,17 +12,18 @@ namespace JSMF.Interpreter
         NotExists = 0,
         NotExistsInObject = 1,
         Null = 2,
-        Undefined = 3,                          // 000000000011 // nedefinovaný hodnota znamená, že objekt je ve skutečnosti definován, ale jeho hodnota není
-        Boolean = 4 | Undefined,                // 000000000111
-        Integer = 8 | Undefined,                // 000000001011
-        Double = 16 | Undefined,                // 000000010011
-        String = 32 | Undefined,                // 000000100011
-        Symbol = 64 | Undefined,                // 000001000011
-        Object = 128 | Undefined,               // 000010000011
-        Function = 256 | Undefined,             // 000100000011
-        Date = 512 | Undefined,                 // 001000000011
-        Property = 1024 | Undefined,            // 010000000011
-        SpreadOperatorResult = 2048 | Undefined // 100000000011
+        Undefined = 3,                          // 0000000000011 // nedefinovaný hodnota znamená, že objekt je ve skutečnosti definován, ale jeho hodnota není
+        Boolean = 4 | Undefined,                // 0000000000111
+        Integer = 8 | Undefined,                // 0000000001011
+        Double = 16 | Undefined,                // 0000000010011
+        String = 32 | Undefined,                // 0000000100011
+        Symbol = 64 | Undefined,                // 0000001000011
+        Object = 128 | Undefined,               // 0000010000011
+        Function = 256 | Undefined,             // 0000100000011
+        Date = 512 | Undefined,                 // 0001000000011
+        Property = 1024 | Undefined,            // 0010000000011
+        SpreadOperatorResult = 2048 | Undefined,// 0100000000011
+        EvaluatableObject = 4096 | Undefined,   // 1000000000011 // vyhodnotitelny objekt (muze to byt matematicky vyraz, nebo string `neco ${variable} neco`
     }
 
     public enum JSValueObjectType
@@ -95,6 +96,7 @@ namespace JSMF.Interpreter
                     case JSValueType.Property:
                     case JSValueType.SpreadOperatorResult:
                     case JSValueType.Date:
+                    case JSValueType.EvaluatableObject:
                         {
                             if (_oValue != this && _oValue is JSObject)
                                 return (_oValue as JSObject).Value;
@@ -135,6 +137,7 @@ namespace JSMF.Interpreter
                     case JSValueType.Function:
                     case JSValueType.Property:
                     case JSValueType.Date:
+                    case JSValueType.EvaluatableObject:
                         {
                             _oValue = value;
                             break;
@@ -208,6 +211,7 @@ namespace JSMF.Interpreter
                     return new JSValue() { _valueType = JSValueType.Double, Value = n.Value._dValue, _attributes = JSValueAttributesInternal.DoNotEnumerate};
                 case NodeBoolean n: return new JSValue() { _valueType = JSValueType.Boolean, Value = n.Value, _attributes = JSValueAttributesInternal.DoNotEnumerate };
                 case NodeArray n: return new JSValue() { _valueType = JSValueType.Object, _valueObjectSubtype = JSValueObjectType.ArrayType, Value = n.Array.Select(item => ParseINode(item)).ToArray(), _attributes = JSValueAttributesInternal.None };
+                case NodeString n: return new JSValue() { _valueType = JSValueType.String, Value = n.Value };
                 case NodeFunction n:
                     return new JSValue
                     {
@@ -215,6 +219,14 @@ namespace JSMF.Interpreter
                         Value = n,
                         _attributes = JSValueAttributesInternal.Eval
                     };
+                case NodeJSObject n:
+                    return new JSValue
+                    {
+                        _valueType = JSValueType.Object,
+                        _oValue = n,
+                        _valueObjectSubtype = JSValueObjectType.JsonType,
+                    };
+                case NodeBinary n: return new JSValue() { _valueType = JSValueType.EvaluatableObject, Value = n };
 
             }
             return null;
@@ -234,8 +246,11 @@ namespace JSMF.Interpreter
                     sb.Append("]");
                 }
             }
+            
+            if (_valueType == JSValueType.Undefined) return "undefined";
+            if (_valueType == JSValueType.Null) return "null";
 
-            return Value.ToString();
+            return Value?.ToString() ?? string.Empty;
         }
 
 

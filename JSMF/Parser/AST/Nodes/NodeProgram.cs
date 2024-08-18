@@ -12,13 +12,13 @@ namespace JSMF.Parser.AST.Nodes
         {
             Type = NodeType.Program;
         }
-        public override JSValue Evaluate(Scope context)
+        public override JSValue Evaluate(Scope? context)
         {
             /*if (Caller is NodeGenerator generator)
             {
                 return JSValue.ParseINode(generator.Next(context));
             }*/
-            var aContext = new Scope(context);
+            var aContext = context != null ? context.Extend() : Runner.GlobalScope;
             try
             {
                 foreach (var node in Program)

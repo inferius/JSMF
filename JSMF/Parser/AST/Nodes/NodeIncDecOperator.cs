@@ -15,7 +15,7 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            var val = context.Get(Identifier.Value);
+            var val = context.Get(Identifier.Value, FileInfo);
             if (val.Value.ValueType == JSValueType.Integer || val.Value.ValueType == JSValueType.Double)
             {
                 if (val.Value.ValueType == JSValueType.Integer)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
@@ -7,6 +8,8 @@ namespace JSMF.Parser.AST.Nodes
     {
         public INode Function { get; set; }
         public List<INode> Arguments { get; set; } = new List<INode>();
+        
+        private Runner runner = new Runner();
 
 
         public NodeCall()
@@ -29,8 +32,23 @@ namespace JSMF.Parser.AST.Nodes
 
             if (Function is NodeIdentifier nodeIdentifier)
             {
-                var fnc = context.GetFunction(nodeIdentifier.Value);
-                return CallFunction(context, fnc);
+                NodeFunction nodeFnc;
+                try
+                {
+                    var varFnc = context.Get(nodeIdentifier.Value, FileInfo);
+
+                    nodeFnc = varFnc.Value.Value as NodeFunction;
+                        
+                    //return CallFunction(context, varFnc.Value.Value as NodeFunction ?? throw new InvalidOperationException());
+                }
+                catch (Exception e)
+                {
+                    //var fnc = context.GetFunction(nodeIdentifier.Value, FileInfo);
+                    //return CallFunction(context, fnc);
+                    nodeFnc = context.GetFunction(nodeIdentifier.Value, FileInfo);
+                }
+                
+                return CallFunction(context, nodeFnc);
             }
 
             return JSValue.undefined;
@@ -48,7 +66,7 @@ namespace JSMF.Parser.AST.Nodes
                 //argsObject.Values.Add(new NodeSymbol(SymbolTypes.Iterator), new NodeFunction { IsGenerator = true, Body = new NodeBlock { Statements = new List<INode> { new NodeSymbol(SymbolTypes.Yield, new NodeIdentifier("this")) } };
                 argsObject.Values.Add(new NodeString("callee"), Function);
 
-                foreach (NodeIdentifier nodeIdentifier in nodeFunction.Arguments)
+                foreach (NodeIdentifier nodeIdentifier in nodeFunction.Arguments ?? [])
                 {
                     functionContext.Define(new Variable { Name = nodeIdentifier.Value, Value = JSValue.undefined, VarType = VarType.Let });
                 }
@@ -58,7 +76,7 @@ namespace JSMF.Parser.AST.Nodes
                     if (i < nodeFunction.Arguments.Count)
                     {
                         var identifier = nodeFunction.Arguments[i] as NodeIdentifier;
-                        functionContext.SetOrUpdate(functionContext.Get(identifier.Value), JSValue.ParseINode(Arguments[i]));
+                        functionContext.SetOrUpdate(functionContext.Get(identifier.Value, FileInfo), JSValue.ParseINode(Arguments[i]));
                     }
                     
                     argsObject.Values.Add(new NodeNumber(i), Arguments[i]);
@@ -66,7 +84,7 @@ namespace JSMF.Parser.AST.Nodes
                 }
 
                 functionContext.Define(new Variable { Name = "arguments", Value = JSValue.ParseINode(argsObject), VarType = VarType.Let });
-                return Runner.RunInScope(nodeFunction.Body, functionContext);
+                return runner.Run(nodeFunction.Body, functionContext);
             }
         }
     }

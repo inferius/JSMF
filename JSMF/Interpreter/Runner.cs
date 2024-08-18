@@ -1,17 +1,22 @@
-﻿using JSMF.Parser.AST.Nodes;
+﻿using System;
+using System.Collections.Generic;
+using JSMF.EventArgs;
+using JSMF.Parser.AST.Nodes;
 
 namespace JSMF.Interpreter
 {
     public class Runner
     {
-        private readonly Scope GlobalScope = new Scope(null);
+        internal static Scope GlobalScope;
 
-        public Runner()
+        public static event EventHandler<ConsoleEventArgs> ConsoleEvents;
+
+        public Runner(Scope globalScope = null)
         {
-            
+            GlobalScope = globalScope ?? new Scope(null);
         }
 
-        public void Run(INode node)
+        public JSValue Run(INode node, Scope scope = null)
         {
             if (node is NodeProgram program)
             {
@@ -26,18 +31,20 @@ namespace JSMF.Interpreter
                             break;
                     }
                 }*/
-                program.Evaluate(GlobalScope);
+                return program.Evaluate(null);
             }
-            
+
+            /*if (node is NodeReturn returnNode)
+            {
+                return returnNode.Evaluate(scope ?? GlobalScope);
+            }*/
+            return JSValue.undefined;
         }
         
-        public static JSValue RunInScope(INode node, Scope scope)
+        
+        public static void RaiseConsoleEvents(ConsoleEventArgsType type, IEnumerable<INode> arguments, Scope scope, Scope globalScope)
         {
-            if (node is NodeProgram program)
-            {
-                return program.Evaluate(scope);
-            }
-            return JSValue.undefined;
+            ConsoleEvents?.Invoke(null, new ConsoleEventArgs(type, arguments, scope, globalScope));
         }
     }
 }

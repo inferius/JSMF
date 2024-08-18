@@ -29,12 +29,13 @@ namespace JSMF.Parser.AST.Nodes
                     if (Left is NodeIdentifier nodeIdentifier)
                     {
                         context.Set(nodeIdentifier.Value, l + r);
-                        return context.Get(nodeIdentifier.Value).Value;
+                        return context.Get(nodeIdentifier.Value, FileInfo).Value;
                     }
                     ExceptionHelper.ThrowTypeError("Left side of assignment must be a variable");
                     break;
             }
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return JSValue.undefined;
         }
     }
 }
