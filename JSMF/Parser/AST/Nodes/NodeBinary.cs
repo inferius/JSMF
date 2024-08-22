@@ -69,7 +69,7 @@ namespace JSMF.Parser.AST.Nodes
                     return new JSValue { _valueType = JSValueType.Boolean, Value = l >= r };
                 case "<=":
                     return new JSValue { _valueType = JSValueType.Boolean, Value = l <= r };
-                case "==":
+                case "==": // TODO: Prepsat na === a doplnit ==
                     return new JSValue { _valueType = JSValueType.Boolean, Value = l == r };
                 case "!=":
                     return new JSValue { _valueType = JSValueType.Boolean, Value = l != r };

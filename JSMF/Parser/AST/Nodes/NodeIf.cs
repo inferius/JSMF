@@ -1,4 +1,5 @@
 ﻿using System;
+using JSMF.Exceptions;
 using JSMF.Interpreter;
 
 namespace JSMF.Parser.AST.Nodes
@@ -16,7 +17,26 @@ namespace JSMF.Parser.AST.Nodes
 
         public override JSValue Evaluate(Scope context)
         {
-            throw new NotImplementedException();
+            NodeFor.SetProgramData(Condition);
+            NodeFor.SetProgramData(Then);
+            NodeFor.SetProgramData(Else);
+            
+            var aScope = context.Extend();
+
+            if (Condition is NodeBinary condition)
+            {
+                var result = condition.Evaluate(context);
+                if (result.IsTrue())
+                {
+                    Then.Evaluate(aScope);
+                }
+                else
+                {
+                    Else?.Evaluate(aScope);
+                }
+            }
+            
+            return JSValue.undefined;
         }
     }
 }

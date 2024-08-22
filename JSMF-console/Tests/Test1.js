@@ -69,6 +69,16 @@ console.log(getCstr());  // Výstup: "ahoj 5 test"
 strtest = 10;
 console.log(getCstr());  // Výstup: "ahoj 10 test"
 
+console.log(2 + 3 * 4);
+
+if (2 + 3 * 4 == 14) {
+    console.log("TRUE");
+}
+
+if (2 + 3 * 4 == 14)
+    console.log("TRUE2");
+
+
 //function* generator() {
 //    yield 42;
 //}

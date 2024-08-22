@@ -66,7 +66,7 @@ namespace JSMF.Parser.AST.Nodes
             return JSValue.undefined;
         }
 
-        private static void SetProgramData(INode node)
+        internal static void SetProgramData(INode node)
         {
             if (node is NodeProgram program)
             {
