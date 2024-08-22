@@ -798,11 +798,11 @@ namespace JSMF.Parser
                 {
                     return ParseIncDecOperator(left);
                 }
-                var hisPriority = AstTreeMethods.OperatorsPriority[_stream.Peek().Value];
-                if (hisPriority > priority)
+                var itsPriority = AstTreeMethods.OperatorsPriority[_stream.Peek().Value];
+                if (itsPriority > priority)
                 {
                     var tok = _stream.Next();
-                    var right = MaybeBinary(ParseAtom(), hisPriority);
+                    var right = MaybeBinary(ParseAtom(), itsPriority);
                     INode binary = null;
                     if (tok.Value == "=")
                     {

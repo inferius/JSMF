@@ -60,7 +60,7 @@ async function testAync() {
 test();
 console.log(cstr); // vystup "ahoj 0 test"
 a = 5;
-console.log(cstr);  // vystup "ahoj 0 test"
+console.log(cstr);  // vystup "ahoj 0 test" // TODO Vyhodnoti se to spatne
 
 let strtest = 5;
 const getCstr = () => `ahoj ${strtest} test`;
