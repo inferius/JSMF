@@ -383,6 +383,76 @@ namespace JSMF.Interpreter
             return r;
         }
         #endregion
+        
+        #region Operator *
+        public static JSValue operator *(JSValue a, JSValue b)
+        {
+            var r = new JSValue();
+
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Integer;
+                    r.Value = a._iValue * b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._iValue * b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue * b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue * b._dValue;
+                }
+            }
+            return r;
+        }
+        #endregion
+        
+        #region Operator -
+        public static JSValue operator /(JSValue a, JSValue b)
+        {
+            var r = new JSValue();
+
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Integer;
+                    r.Value = a._iValue / b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._iValue / b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue / b._iValue;
+                }
+                else if (b.ValueType == JSValueType.Double)
+                {
+                    r.ValueType = JSValueType.Double;
+                    r.Value = a._dValue / b._dValue;
+                }
+            }
+            return r;
+        }
+        #endregion
 
         #region Operator >
 

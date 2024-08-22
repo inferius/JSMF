@@ -73,7 +73,7 @@ console.log(getCstr());  // Výstup: "ahoj 10 test"
 //    yield 42;
 //}
 
-for (let i = 0, j = 0; i < 10; i++, j+=2)
+for (let i = 0, j = 1; i < 10; i++, j*=2)
     console.log(`iteration: j = ${j}, i = ${i}`);
 
 (function(a, b) {

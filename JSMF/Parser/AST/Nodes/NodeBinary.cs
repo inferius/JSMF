@@ -25,6 +25,10 @@ namespace JSMF.Parser.AST.Nodes
                     return l + r;
                 case "-":
                     return l - r;
+                case "*":
+                    return l * r;
+                case "/":
+                    return l / r;
                 case "+=":
                     if (Left is NodeIdentifier nodeIdentifier)
                     {
@@ -38,6 +42,22 @@ namespace JSMF.Parser.AST.Nodes
                     {
                         context.Set(nodeIdentifier2.Value, l - r);
                         return context.Get(nodeIdentifier2.Value, FileInfo).Value;
+                    }
+                    ExceptionHelper.ThrowTypeError("Left side of assignment must be a variable");
+                    break;
+                case "*=":
+                    if (Left is NodeIdentifier nodeIdentifier3)
+                    {
+                        context.Set(nodeIdentifier3.Value, l * r);
+                        return context.Get(nodeIdentifier3.Value, FileInfo).Value;
+                    }
+                    ExceptionHelper.ThrowTypeError("Left side of assignment must be a variable");
+                    break;
+                case "/=":
+                    if (Left is NodeIdentifier nodeIdentifier4)
+                    {
+                        context.Set(nodeIdentifier4.Value, l / r);
+                        return context.Get(nodeIdentifier4.Value, FileInfo).Value;
                     }
                     ExceptionHelper.ThrowTypeError("Left side of assignment must be a variable");
                     break;
