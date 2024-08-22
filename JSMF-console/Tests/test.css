@@ -1,0 +1,136 @@
+/* Elevation */
+:root {
+  --elevation-00: 0 1px 1px oklch(0.1 0.04 250 / 0.1), 0 1px 2px oklch(0.1 0.04 250 / 0.04);
+  --elevation-01: 0 1px 1px oklch(0.1 0.04 250 / 0.1), 0 2px 4px -1px oklch(0.1 0.04 250 / 0.08);
+  --elevation-02: 0 2px 4px oklch(0.1 0.04 250 / 0.1), 0 2px 4px -1px oklch(0.1 0.04 250 / 0.18);
+  --elevation-03: 0 4px 6px oklch(0.1 0.04 250 / 0.12), 0 4px 6px -2px oklch(0.1 0.04 250 / 0.2);
+  --elevation-04: 0 6px 12px oklch(0.1 0.04 250 / 0.14), 0 6px 12px -3px oklch(0.1 0.04 250 / 0.24), 0 0 0 1px oklch(0.1 0.04 250 / 0.06);
+  --elevation-05: 0 10px 30px oklch(0.1 0.04 250 / 0.16), 0 10px 30px -4px oklch(0.1 0.04 250 / 0.28), 0 0 0 1px oklch(0.1 0.04 250 / 0.07);
+  --elevation-06: 0 20px 48px oklch(0.1 0.04 250 / 0.2), 0 20px 48px -5px oklch(0.1 0.04 250 / 0.32), 0 0 0 1px oklch(0.1 0.04 250 / 0.08);
+}
+:root[data-theme$="dark"] {
+  --elevation-00: 0 1px 1px oklch(0 0.04 250 / 0.1), 0 1px 2px oklch(0 0.04 250 / 0.04);
+  --elevation-01: 0 1px 1px oklch(0 0.04 250 / 0.1), 0 2px 4px -1px oklch(0 0.04 250 / 0.08);
+  --elevation-02: 0 2px 4px oklch(0 0.04 250 / 0.1), 0 2px 4px -1px oklch(0 0.04 250 / 0.18);
+  --elevation-03: 0 4px 6px oklch(0 0.04 250 / 0.12), 0 4px 6px -2px oklch(0 0.04 250 / 0.2);
+  --elevation-04: 0 6px 12px oklch(0 0.04 250 / 0.14), 0 6px 12px -3px oklch(0 0.04 250 / 0.24), 0 0 0 1px oklch(0 0.04 250 / 0.06);
+  --elevation-05: 0 10px 30px oklch(0 0.04 250 / 0.16), 0 10px 30px -4px oklch(0 0.04 250 / 0.28), 0 0 0 1px oklch(0 0.04 250 / 0.07);
+  --elevation-06: 0 20px 48px oklch(0 0.04 250 / 0.2), 0 20px 48px -5px oklch(0 0.04 250 / 0.32), 0 0 0 1px oklch(0 0.04 250 / 0.08);
+}
+/* Text Colors */
+:root {
+  --text-red: oklch(0.5 0.22 28);
+  --text-red-variant: oklch(0.6 0.22 28);
+  --text-pink: oklch(0.51 0.22 0);
+  --text-pink-variant: oklch(0.6 0.22 0);
+  --text-fuchsia: oklch(0.5 0.2 325);
+  --text-fuchsia-variant: oklch(0.6 0.2 325);
+  --text-deeppurple: oklch(0.5 0.19 298);
+  --text-deeppurple-variant: oklch(0.59 0.19 298);
+  --text-navy: oklch(0.4 0.16 266);
+  --text-navy-variant: oklch(0.55 0.16 266);
+  --text-blue: oklch(0.48 0.2 250);
+  --text-blue-variant: oklch(0.58 0.2 250);
+  --text-lightblue: oklch(0.47 0.19 230);
+  --text-lightblue-variant: oklch(0.57 0.19 230);
+  --text-aqua: oklch(0.46 0.18 205);
+  --text-aqua-variant: oklch(0.56 0.18 205);
+  --text-teal: oklch(0.46 0.12 175);
+  --text-teal-variant: oklch(0.56 0.12 175);
+  --text-green: oklch(0.46 0.22 146);
+  --text-green-variant: oklch(0.55 0.22 146);
+  --text-lightgreen: oklch(0.46 0.17 135);
+  --text-lightgreen-variant: oklch(0.56 0.17 135);
+  --text-lime: oklch(0.47 0.16 128);
+  --text-lime-variant: oklch(0.56 0.16 128);
+  --text-yellow: oklch(0.48 0.18 99);
+  --text-yellow-variant: oklch(0.57 0.18 99);
+  --text-amber: oklch(0.48 0.17 82);
+  --text-amber-variant: oklch(0.58 0.17 82);
+  --text-orange: oklch(0.49 0.16 62);
+  --text-orange-variant: oklch(0.59 0.16 62);
+  --text-deeporange: oklch(0.5 0.22 45);
+  --text-deeporange-variant: oklch(0.6 0.22 45);
+  --text-brown: oklch(0.42 0.07 50);
+  --text-brown-variant: oklch(0.57 0.07 50);
+  --text-gray: oklch(0.45 0 0);
+  --text-gray-variant: oklch(0.57 0 0);
+  --text-silver: oklch(0.48 0 0);
+  --text-silver-variant: oklch(0.57 0 0);
+  --text-black: oklch(0.01 0 0);
+  --text-black-variant: oklch(0.16 0 0);
+}
+:root[data-theme$="dark"] {
+  --text-red: oklch(0.76 0.2 28);
+  --text-red-variant: oklch(0.65 0.2 28);
+  --text-pink: oklch(0.82 0.2 0);
+  --text-pink-variant: oklch(0.65 0.2 0);
+  --text-fuchsia: oklch(0.79 0.18 325);
+  --text-fuchsia-variant: oklch(0.65 0.18 325);
+  --text-deeppurple: oklch(0.75 0.17 298);
+  --text-deeppurple-variant: oklch(0.64 0.17 298);
+  --text-navy: oklch(0.74 0.14 266);
+  --text-navy-variant: oklch(0.63 0.14 266);
+  --text-blue: oklch(0.73 0.18 250);
+  --text-blue-variant: oklch(0.63 0.18 250);
+  --text-lightblue: oklch(0.81 0.17 230);
+  --text-lightblue-variant: oklch(0.62 0.17 230);
+  --text-aqua: oklch(0.77 0.16 205);
+  --text-aqua-variant: oklch(0.61 0.16 205);
+  --text-teal: oklch(0.72 0.12 175);
+  --text-teal-variant: oklch(0.61 0.12 175);
+  --text-green: oklch(0.71 0.2 146);
+  --text-green-variant: oklch(0.61 0.2 146);
+  --text-lightgreen: oklch(0.84 0.15 135);
+  --text-lightgreen-variant: oklch(0.64 0.15 135);
+  --text-lime: oklch(0.75 0.14 128);
+  --text-lime-variant: oklch(0.62 0.14 128);
+  --text-yellow: oklch(0.91 0.16 99);
+  --text-yellow-variant: oklch(0.71 0.16 99);
+  --text-amber: oklch(0.84 0.15 82);
+  --text-amber-variant: oklch(0.64 0.15 82);
+  --text-orange: oklch(0.78 0.14 62);
+  --text-orange-variant: oklch(0.64 0.14 62);
+  --text-deeporange: oklch(0.75 0.2 45);
+  --text-deeporange-variant: oklch(0.65 0.2 45);
+  --text-brown: oklch(0.74 0.07 50);
+  --text-brown-variant: oklch(0.63 0.07 50);
+  --text-gray: oklch(0.73 0 0);
+  --text-gray-variant: oklch(0.63 0 0);
+  --text-silver: oklch(0.78 0 0);
+  --text-silver-variant: oklch(0.63 0 0);
+  --text-black: oklch(0.73 0 0);
+  --text-black-variant: oklch(0.63 0 0);
+}
+body {
+  gap: 5px;
+}
+body .token {
+  display: inline-flex;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: var(--text-gray);
+  color: white;
+  margin-right: 5px;
+}
+body .token.Keyword {
+  background-color: var(--text-green);
+  color: white;
+}
+body .token.Identifier {
+  background-color: var(--text-fuchsia);
+  color: white;
+}
+body .token.String {
+  background-color: var(--text-orange);
+  color: white;
+}
+body .token.Operator {
+  background-color: var(--text-teal);
+  color: white;
+}
+body .token.Numeric {
+  background-color: var(--text-red);
+  color: white;
+}
+/*# sourceMappingURL=test.css.map */

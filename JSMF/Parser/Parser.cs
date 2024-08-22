@@ -16,11 +16,11 @@ namespace JSMF.Parser
 {
     public class Parser
     {
-        private TokenStream stream;
+        private readonly TokenStream _stream;
 
         public Parser(TokenStream stream)
         {
-            this.stream = stream;
+            _stream = stream;
         }
 
         public INode FullParse()
@@ -28,15 +28,15 @@ namespace JSMF.Parser
             return ParseTopLevel();
         }
 
-        public INode ParseAtom()
+        private INode ParseAtom()
         {
             return MaybeCall(() =>
             {
-                var _pPos = stream.CurrentPosition();
+                var _pPos = _stream.CurrentPosition();
                 SkipAllLineBreak();
                 if (IsSeparator("("))
                 {
-                    stream.Next();
+                    _stream.Next();
                     if (IsSeparator(")"))
                     {
                         SkipSeparator(")");
@@ -49,7 +49,7 @@ namespace JSMF.Parser
                     {
                         var args = new List<INode>();
                         args.Add(r);
-                        while (!stream.Eof() && !IsSeparator(")"))
+                        while (!_stream.Eof() && !IsSeparator(")"))
                         {
                             SkipSeparator(",");
                             args.Add(ParseExpression());
@@ -143,9 +143,9 @@ namespace JSMF.Parser
 
                 if (IsOperator("++") || IsOperator("--"))
                 {
-                    var op = stream.Peek().Value;
+                    var op = _stream.Peek().Value;
                     SkipOperator();
-                    var nexTok = stream.Next();
+                    var nexTok = _stream.Next();
                     if (nexTok.Type != TokenType.Identifier) Unexpected();
                     return new NodeIncDecOperator
                     {
@@ -156,8 +156,8 @@ namespace JSMF.Parser
                     };
                 }
 
-                var before = stream.Peek();
-                var tok = stream.Next();
+                var before = _stream.Peek();
+                var tok = _stream.Next();
                 if (tok.Type == TokenType.Identifier)
                 {
                     if (IsOperator("=>"))
@@ -168,6 +168,13 @@ namespace JSMF.Parser
                     if (IsSeparator(".") || IsSeparator("["))
                     {
                         return ParseObjectCall(new NodeIdentifier { Value = tok.Value, FileInfo = _pPos });
+                    }
+
+                    if (IsOperator("=") && useLastVarType)
+                    {
+                        var d= ParseVardef(before);
+                        useLastVarType = false;
+                        return d;
                     }
 
                     return new NodeIdentifier { Value = tok.Value, FileInfo = _pPos};
@@ -191,7 +198,7 @@ namespace JSMF.Parser
             });
         }
 
-        public INode ParseAtomClass()
+        private INode ParseAtomClass()
         {
             SkipAllLineBreak();
             if (IsSeparator("{"))
@@ -208,7 +215,7 @@ namespace JSMF.Parser
                 return ParseClassProperty();
             }
 
-            if (IsKeyword("static") || IsKeyword("async") || IsKeyword("*") || stream.Peek().Type == TokenType.Identifier)
+            if (IsKeyword("static") || IsKeyword("async") || IsKeyword("*") || _stream.Peek().Type == TokenType.Identifier)
             {
                 return ParseClassMethod();
             }
@@ -217,9 +224,9 @@ namespace JSMF.Parser
             return null;
         }
 
-        public INode ParseClassMethod()
+        private INode ParseClassMethod()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             var isSatic = IsKeyword("static");
             if (isSatic) SkipKeyword("static");
             var isAsync = IsKeyword("async");
@@ -229,7 +236,7 @@ namespace JSMF.Parser
 
             var isGenerator = IsOperator("*");
             if (isGenerator) SkipOperator("*");
-            var name = stream.Next();
+            var name = _stream.Next();
             if (name.Type != TokenType.Identifier) Unexpected();
             var args = Delimited("(", ")", ",", ParseExpression);
             SkipAllLineBreak();
@@ -262,12 +269,12 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseClassProperty(bool isAsync = false)
+        private INode ParseClassProperty(bool isAsync = false)
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             var isGetter = IsKeyword("get");
             SkipKeyword();
-            var name = stream.Next();
+            var name = _stream.Next();
             if (name.Type != TokenType.Identifier) Unexpected();
             var args = Delimited("(", ")", ",", ParseExpression);
             SkipAllLineBreak();
@@ -285,9 +292,9 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseCall(INode funct)
+        private INode ParseCall(INode funct)
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             return new NodeCall()
             {
                 Function = funct,
@@ -296,9 +303,9 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseObjectCall(INode objName)
+        private INode ParseObjectCall(INode objName)
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             INode child = null;
 
             //if (objName.Type != TokenType.Identifier) Unexpected();
@@ -306,7 +313,7 @@ namespace JSMF.Parser
             if (IsSeparator("."))
             {
                 SkipSeparator(".");
-                var ntoken = stream.Next();
+                var ntoken = _stream.Next();
                 if (ntoken.Type != TokenType.Identifier) Unexpected();
                 child = ParseObjectCall(new NodeIdentifier { Value = ntoken.Value, FileInfo = _pPos});
             }
@@ -333,29 +340,29 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseExpression()
+        private INode ParseExpression()
         {
             return MaybeCall(() => MaybeBinary(ParseAtom(), 0));
         }
 
-        public INode ParseObject()
+        private INode ParseObject()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
 
             var obj = new NodeJSObject() { FileInfo = _pPos};
             if (IsSeparator("{")) SkipSeparator("{");
             if (IsSeparator("}")) return obj;
 
-            while (!stream.Eof())
+            while (!_stream.Eof())
             {
                 SkipAllLineBreak();
-                if (stream.Peek().Type == TokenType.String || stream.Peek().Type == TokenType.Identifier)
+                if (_stream.Peek().Type == TokenType.String || _stream.Peek().Type == TokenType.Identifier)
                 {
-                    var nameTok = stream.Next();
+                    var nameTok = _stream.Next();
                     INode name = null;
 
-                    if (nameTok.Type == TokenType.String) name = new NodeString { Value = nameTok.Value, FileInfo = stream.CurrentPosition() };
-                    else name = new NodeIdentifier { Value = nameTok.Value, FileInfo = stream.CurrentPosition() };
+                    if (nameTok.Type == TokenType.String) name = new NodeString { Value = nameTok.Value, FileInfo = _stream.CurrentPosition() };
+                    else name = new NodeIdentifier { Value = nameTok.Value, FileInfo = _stream.CurrentPosition() };
                     SkipAllLineBreak();
                     if (IsSeparator(","))
                     {
@@ -386,17 +393,17 @@ namespace JSMF.Parser
             return obj;
         }
 
-        public INode ParseClass()
+        private INode ParseClass()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             SkipKeyword("class");
             SkipAllLineBreak();
             INode extend = null;
             INode name = null;
             var isAnonymous = false;
-            if (stream.Peek().Type == TokenType.Identifier)
+            if (_stream.Peek().Type == TokenType.Identifier)
             {
-                name = new NodeIdentifier { Value = stream.Next().Value };
+                name = new NodeIdentifier { Value = _stream.Next().Value };
             }
             else
             {
@@ -405,8 +412,8 @@ namespace JSMF.Parser
             if (IsKeyword("extends"))
             {
                 SkipKeyword("extends");
-                if (stream.Peek().Type != TokenType.Identifier) Unexpected();
-                extend = new NodeIdentifier { Value = stream.Next().Value };
+                if (_stream.Peek().Type != TokenType.Identifier) Unexpected();
+                extend = new NodeIdentifier { Value = _stream.Next().Value };
             }
             SkipAllLineBreak();
             if (!IsSeparator("{")) Unexpected();
@@ -423,31 +430,41 @@ namespace JSMF.Parser
         }
 
         #region Helper parse keywords methods
-        public INode ParseBool()
+        private INode ParseBool()
         {
-            var _pPos = stream.CurrentPosition();
-            var val = stream.Peek().Value;
-            SkipKeyword(stream.Peek().Value);
+            var _pPos = _stream.CurrentPosition();
+            var val = _stream.Peek().Value;
+            SkipKeyword(_stream.Peek().Value);
             return new NodeBoolean { Value = val == "true", FileInfo = _pPos};
         }
 
-        public INode ParseVardef()
+        private INode ParseVardef(Token before = null)
         {
-            var _pPos = stream.CurrentPosition();
-            var name = ParseVarname();
+            var _pPos = _stream.CurrentPosition();
+            var name = ParseVarname(before);
             INode def = null;
             if (IsOperator("="))
             {
-                stream.Next();
+                _stream.Next();
                 def = ParseExpression();
             }
-            if (IsSeparator(";")) SkipSeparator(";");
+
+            if (IsSeparator(";"))
+            {
+                useLastVarType = false;
+                //SkipSeparator(";");
+            }
+            // Pokud je promenna oddelena carkama, definuje se vic promennych daneho typu
+            if (IsSeparator(","))
+            {
+                useLastVarType = true;
+            }
             return new NodeAssing { Operator = "=", Left = name, Right = def, FileInfo = _pPos};
         }
 
-        public INode ParseProgram()
+        private INode ParseProgram()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             var prog = new List<INode>();
             SkipAllLineBreak();
             SkipSeparator("{");
@@ -463,11 +480,11 @@ namespace JSMF.Parser
                 };
             }
 
-            while (!stream.Eof())
+            while (!_stream.Eof())
             {
                 SkipAllLineBreak();
                 prog.Add(ParseExpression());
-                if (!stream.Eof())
+                if (!_stream.Eof())
                 {
                     if (IsSeparator(";")) SkipSeparator(";");
                     else if (IsSeparator(",")) SkipSeparator(",");
@@ -489,9 +506,9 @@ namespace JSMF.Parser
 
         }
 
-        public INode ParseIf()
+        private INode ParseIf()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             SkipKeyword("if");
             var cond = ParseExpression();
             SkipAllLineBreak();
@@ -506,7 +523,7 @@ namespace JSMF.Parser
 
             if (IsKeyword("else"))
             {
-                stream.Next();
+                _stream.Next();
                 SkipAllLineBreak();
                 ret.Else = IsSeparator("{") ? ParseProgram() : ParseExpression();
             }
@@ -514,9 +531,9 @@ namespace JSMF.Parser
             return (INode)ret;
         }
 
-        public INode ParseWhile()
+        private INode ParseWhile()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             SkipKeyword("while");
 
             var cond = ParseExpression();
@@ -531,9 +548,9 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseDoWhile()
+        private INode ParseDoWhile()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             SkipKeyword("do");
             var body = ParseProgram();
             if (IsSeparator(";")) SkipSeparator(";");
@@ -551,9 +568,9 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseFor()
+        private INode ParseFor()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             SkipKeyword("for");
             if (!IsSeparator("(")) Unexpected();
 
@@ -577,10 +594,10 @@ namespace JSMF.Parser
 
         }
 
-        public INode ParseForMultiParam()
+        private INode ParseForMultiParam()
         {
             var a = new List<INode>();
-            while (!stream.Eof())
+            while (!_stream.Eof())
             {
                 a.Add(ParseExpression());
                 if (!IsSeparator(",")) break;
@@ -593,18 +610,18 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseForOf()
+        private INode ParseForOf()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             SkipSeparator("(");
-            if (stream.Peek().Value != "var" && stream.Peek().Value != "let" && stream.Peek().Value != "const")
+            if (_stream.Peek().Value != "var" && _stream.Peek().Value != "let" && _stream.Peek().Value != "const")
             {
                 Unexpected();
             }
             var varDef = ParseVarname();
-            if (stream.Peek().Value != "of" && !IsKeyword("in")) Unexpected();
+            if (_stream.Peek().Value != "of" && !IsKeyword("in")) Unexpected();
             var isForOf = !IsKeyword("in");
-            stream.Next();
+            _stream.Next();
             var array = ParseExpression();
             SkipSeparator(")");
             var body = IsSeparator("{") ? ParseProgram() : ParseExpression();
@@ -620,9 +637,9 @@ namespace JSMF.Parser
 
         }
 
-        public INode ParseArrowFunction(List<INode> args, bool isAsync = false)
+        private INode ParseArrowFunction(List<INode> args, bool isAsync = false)
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             if (IsOperator("=>"))
             {
                 SkipOperator("=>");
@@ -638,16 +655,16 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseFunction(bool isAsync = false)
+        private INode ParseFunction(bool isAsync = false)
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             SkipKeyword("function");
             var isGenerator = IsSeparator("*");
             if (IsSeparator("*")) SkipSeparator("*");
             var isAnonym = false;
             NodeIdentifier name = null;
             if (IsSeparator("(")) isAnonym = true;
-            if (!isAnonym) name = new NodeIdentifier { Value = stream.Next().Value };
+            if (!isAnonym) name = new NodeIdentifier { Value = _stream.Next().Value };
             if (!IsSeparator("(")) Unexpected();
             var args = Delimited("(", ")", ",", ParseArgument);
             var body = ParseProgram();
@@ -675,20 +692,28 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseVarname()
+        /// <summary>
+        /// Pokud je promenna pri definici oddelena carkama, je potreba si ulozit posledni typ
+        /// </summary>
+        private string lastVarType = "";
+        private bool useLastVarType = false;
+        private INode ParseVarname(Token before = null)
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             string varType = null;
             if (IsKeyword("const") || IsKeyword("let") || IsKeyword("var"))
             {
-                varType = stream.Peek().Value;
+                varType = _stream.Peek().Value;
                 SkipKeyword();
             }
-            var name = stream.Next();
+            var name = useLastVarType && varType == null ? before : _stream.Next();
             if (name.Type != TokenType.Identifier) Unexpected();
 
+            if (useLastVarType && varType == null) varType = lastVarType;
+            
             if (varType != null)
             {
+                lastVarType = varType;
                 return new NodeVarDef
                 {
                     Value = name.Value,
@@ -703,9 +728,9 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseArgument()
+        private INode ParseArgument()
         {
-            var name = stream.Next();
+            var name = _stream.Next();
             if (name.Type != TokenType.Identifier) Unexpected();
             INode defaultValue = null;
             if (IsOperator("=")) defaultValue = ParseExpression();
@@ -718,18 +743,18 @@ namespace JSMF.Parser
         }
         #endregion
 
-        public INode ParseTopLevel()
+        private INode ParseTopLevel()
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             var prog = new List<INode>();
 
-            while (!stream.Eof())
+            while (!_stream.Eof())
             {
                 SkipAllLineBreak();
-                if (stream.Eof()) break;
+                if (_stream.Eof()) break;
 
                 prog.Add(ParseExpression());
-                if (!stream.Eof())
+                if (!_stream.Eof())
                 {
                     if (IsSeparator(";")) SkipSeparator(";");
                     else if (IsSeparator("LB")) SkipAllLineBreak();
@@ -745,18 +770,18 @@ namespace JSMF.Parser
             };
         }
 
-        public INode ParseIncDecOperator(INode identifier, bool after = true)
+        private INode ParseIncDecOperator(INode identifier, bool after = true)
         {
-            var _pPos = stream.CurrentPosition();
+            var _pPos = _stream.CurrentPosition();
             var decinc = new NodeIncDecOperator() { FileInfo = _pPos};
             decinc.Identifier = identifier as NodeIdentifier;
-            decinc.Operator = stream.Next().Value;
+            decinc.Operator = _stream.Next().Value;
             decinc.AfterVar = after;
 
             return decinc;
         }
 
-        public INode MaybeCall(Func<INode> action)
+        private INode MaybeCall(Func<INode> action)
         {
             var actResult = action();
             return IsSeparator("(") ? ParseCall(actResult) : actResult;
@@ -765,7 +790,7 @@ namespace JSMF.Parser
             //else return actResult;
         }
 
-        public INode MaybeBinary(INode left, int priority)
+        private INode MaybeBinary(INode left, int priority)
         {
             if (IsOperator())
             {
@@ -773,10 +798,10 @@ namespace JSMF.Parser
                 {
                     return ParseIncDecOperator(left);
                 }
-                var hisPriority = AstTreeMethods.OperatorsPriority[stream.Peek().Value];
+                var hisPriority = AstTreeMethods.OperatorsPriority[_stream.Peek().Value];
                 if (hisPriority > priority)
                 {
-                    var tok = stream.Next();
+                    var tok = _stream.Next();
                     var right = MaybeBinary(ParseAtom(), hisPriority);
                     INode binary = null;
                     if (tok.Value == "=")
@@ -810,7 +835,7 @@ namespace JSMF.Parser
             var a = new List<INode>();
             var first = true;
             SkipSeparator(start);
-            while (!stream.Eof())
+            while (!_stream.Eof())
             {
                 if (IsSeparator(stop)) break;
                 if (first) first = false;
@@ -825,32 +850,32 @@ namespace JSMF.Parser
 
         public bool IsObject()
         {
-            stream.ReadNextWithHistory();
+            _stream.ReadNextWithHistory();
             SkipAllLineBreak(true);
-            var tok = stream.ReadNextWithHistory();
+            var tok = _stream.ReadNextWithHistory();
             SkipAllLineBreak(true);
             if (IsOperator(":"))
             {
-                stream.ReverseToHistoryStart();
+                _stream.ReverseToHistoryStart();
                 return true;
             }
-            stream.ReverseToHistoryStart();
+            _stream.ReverseToHistoryStart();
 
             return false;
         }
 
         public bool IsForOfOrForIn()
         {
-            stream.ReadNextWithHistory();
-            stream.ReadNextWithHistory();
-            stream.ReadNextWithHistory();
-            if (stream.Peek().Value == "of" || IsKeyword("in"))
+            _stream.ReadNextWithHistory();
+            _stream.ReadNextWithHistory();
+            _stream.ReadNextWithHistory();
+            if (_stream.Peek().Value == "of" || IsKeyword("in"))
             {
-                stream.ReverseToHistoryStart();
+                _stream.ReverseToHistoryStart();
                 return true;
             }
 
-            stream.ReverseToHistoryStart();
+            _stream.ReverseToHistoryStart();
             return false;
         }
 
@@ -859,32 +884,32 @@ namespace JSMF.Parser
             var bracket = 0;
             if (IsSeparator("("))
             {
-                while (!stream.Eof())
+                while (!_stream.Eof())
                 {
                     if (IsSeparator("(")) bracket++;
                     else if (IsSeparator(")"))
                     {
                         if (--bracket == 0)
                         {
-                            stream.ReadNextWithHistory();
+                            _stream.ReadNextWithHistory();
                             if (IsOperator("=>"))
                             {
-                                stream.ReverseToHistoryStart();
+                                _stream.ReverseToHistoryStart();
                                 return true;
                             }
-                            stream.ReverseToHistoryStart();
+                            _stream.ReverseToHistoryStart();
                             return false;
                         }
                     }
-                    stream.ReadNextWithHistory();
+                    _stream.ReadNextWithHistory();
                 }
             }
-            else if (stream.Peek().Type == TokenType.Identifier)
+            else if (_stream.Peek().Type == TokenType.Identifier)
             {
-                stream.ReadNextWithHistory();
+                _stream.ReadNextWithHistory();
                 if (IsOperator("=>"))
                 {
-                    stream.ReverseToHistoryStart();
+                    _stream.ReverseToHistoryStart();
                     return true;
                 }
             }
@@ -894,49 +919,49 @@ namespace JSMF.Parser
 
         public bool IsSeparator(string sep = null)
         {
-            return stream.Peek()?.Type == TokenType.Separator && (sep == null || stream.Peek()?.Value == sep);
+            return _stream.Peek()?.Type == TokenType.Separator && (sep == null || _stream.Peek()?.Value == sep);
         }
 
         public bool IsKeyword(string keyword = null)
         {
-            return stream.Peek()?.Type == TokenType.Keyword && (keyword == null || stream.Peek()?.Value == keyword);
+            return _stream.Peek()?.Type == TokenType.Keyword && (keyword == null || _stream.Peek()?.Value == keyword);
         }
 
         public bool IsOperator(string op = null)
         {
-            return stream.Peek()?.Type == TokenType.Operator && (op == null || stream.Peek()?.Value == op);
+            return _stream.Peek()?.Type == TokenType.Operator && (op == null || _stream.Peek()?.Value == op);
         }
 
         public void SkipSeparator(string sep = null)
         {
-            if (IsSeparator(sep)) stream.Next();
+            if (IsSeparator(sep)) _stream.Next();
             else Unexpected();
         }
 
         public void SkipKeyword(string keyword = null)
         {
-            if (IsKeyword(keyword)) stream.Next();
+            if (IsKeyword(keyword)) _stream.Next();
             else Unexpected();
         }
 
         public void SkipOperator(string op = null)
         {
-            if (IsOperator(op)) stream.Next();
+            if (IsOperator(op)) _stream.Next();
             else Unexpected();
         }
 
         public void SkipAllLineBreak(bool withHistory = false)
         {
-            while (!stream.Eof() && IsSeparator("LB"))
+            while (!_stream.Eof() && IsSeparator("LB"))
             {
-                if (withHistory) stream.ReadNextWithHistory();
-                else stream.Next();
+                if (withHistory) _stream.ReadNextWithHistory();
+                else _stream.Next();
             }
         }
 
         public void Unexpected()
         {
-            throw new ParserException($"Unexpected token '{stream.Peek().Value}'", stream.CurrentPosition());
+            throw new ParserException($"Unexpected token '{_stream.Peek().Value}'", _stream.CurrentPosition());
         }
     }
 }

@@ -157,6 +157,9 @@ namespace JSMF.Parser.Tokenizer
             }
             stream.Next();
             if (str.Length > 0) tokens.Add(new Token(TokenType.String, str.ToString(), stream.FilePosition));
+            
+            // Pri vkladani doslo, ze se po promenne vlozil operator +, aniz by musel rozbijelo to potom syntaktickou kontrolu
+            if (tokens.Last().Type == TokenType.Operator && tokens.Last().Value == "+") tokens.Remove(tokens.Last());
 
             return tokens;
         }

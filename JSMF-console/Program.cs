@@ -22,25 +22,25 @@ namespace JSMF_console
             //{
             //    File.AppendAllText(@"C:\Temp\tokens.txt", $"{tokstr.Next().ToStringWithFile()}\n");
             //}
+            
+            //var tokens = TokenRegistredWords.ReadString(new InputStream("`${aa}ahoj ${ah} \\` ˛ \\` $fsa \\${pp}${ui}`"));
 
+            Tools.TokenStringDebugPrinter(
+                new TokenStream(new InputStream(new StreamReader(filePathRelative, Encoding.UTF8), filePathRelative)),
+                "../../Tests/Test1.js.tokens.html", 
+                "test.css"
+                );
+            
             var tokenStream = new Parser(new TokenStream(new InputStream(new StreamReader(filePathRelative, Encoding.UTF8), filePathRelative)));
             var result = tokenStream.FullParse();
 
-            /*using (var scope = new Scope(null))
-            {
-                if (result is NodeProgram)
-                {
-                    var programResult = result.Evaluate(scope);
-                }
-
-            }*/
 
             var runner = Initialize();
             
             
             runner.Run(result);
 
-            var tokens = TokenRegistredWords.ReadString(new InputStream("`${aa}ahoj ${ah} \\` ˛ \\` $fsa \\${pp}${ui}`"));
+            
 
         }
 

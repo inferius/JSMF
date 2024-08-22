@@ -33,6 +33,26 @@ namespace JSMF.Parser.AST.Nodes
                     }
                     ExceptionHelper.ThrowTypeError("Left side of assignment must be a variable");
                     break;
+                case "-=":
+                    if (Left is NodeIdentifier nodeIdentifier2)
+                    {
+                        context.Set(nodeIdentifier2.Value, l - r);
+                        return context.Get(nodeIdentifier2.Value, FileInfo).Value;
+                    }
+                    ExceptionHelper.ThrowTypeError("Left side of assignment must be a variable");
+                    break;
+                case ">":
+                    return new JSValue { _valueType = JSValueType.Boolean, Value = l > r };
+                case "<":
+                    return new JSValue { _valueType = JSValueType.Boolean, Value = l < r };
+                case ">=":
+                    return new JSValue { _valueType = JSValueType.Boolean, Value = l >= r };
+                case "<=":
+                    return new JSValue { _valueType = JSValueType.Boolean, Value = l <= r };
+                case "==":
+                    return new JSValue { _valueType = JSValueType.Boolean, Value = l == r };
+                case "!=":
+                    return new JSValue { _valueType = JSValueType.Boolean, Value = l != r };
             }
             //throw new NotImplementedException();
             return JSValue.undefined;

@@ -58,6 +58,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Tests\test.less" />
     <Content Include="Tests\Test1.js" />
     <Content Include="Tests\test2.js" />
   </ItemGroup>

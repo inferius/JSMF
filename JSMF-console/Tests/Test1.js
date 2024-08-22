@@ -10,7 +10,8 @@ var c = {
 }
 let x = 5;
 
-var z = 5, zz = 6;
+var z = 5, zz = 6; // TODO: Opravit, promena zz se vytvori jako NodeIdentifier misto NodeDefVar pak to padne na prirazeni neexistujici promenne, bude treba upravit parser
+//var z = 5;
 
 function test(ss) {
     let test = 55;
@@ -47,6 +48,9 @@ async function testAync() {
         return c["ahoj"].ppp_sf[x()];
     }
 
+    for (var index = 0; index < 10; index++)
+        console.log(index);
+    
     for (var i = 0, j = 0; i < 10; i++, j++)
         console.log(j);
 
@@ -68,6 +72,9 @@ console.log(getCstr());  // Výstup: "ahoj 10 test"
 //function* generator() {
 //    yield 42;
 //}
+
+for (let i = 0, j = 0; i < 10; i++, j+=2)
+    console.log(`iteration: j = ${j}, i = ${i}`);
 
 (function(a, b) {
     for (var i = 0, h = 6; i < 10; i++) console.log(i);

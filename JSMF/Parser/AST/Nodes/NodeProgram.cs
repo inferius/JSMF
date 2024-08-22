@@ -7,6 +7,11 @@ namespace JSMF.Parser.AST.Nodes
     {
         public INode Caller { get; set; }
         public List<INode> Program { get; set; } = new List<INode>();
+        
+        public Scope CurrentEvaluatingScope { get; private set; }
+        public bool ThrowExceptions { get; set; } = false;
+        
+        public bool NoExtendScope { get; set; } = false;
 
         public NodeProgram()
         {
@@ -18,7 +23,8 @@ namespace JSMF.Parser.AST.Nodes
             {
                 return JSValue.ParseINode(generator.Next(context));
             }*/
-            var aContext = context != null ? context.Extend() : Runner.GlobalScope;
+            var aContext = context != null ? (NoExtendScope ? context : context.Extend()) : Runner.GlobalScope;
+            CurrentEvaluatingScope = aContext;
             try
             {
                 foreach (var node in Program)
@@ -30,11 +36,11 @@ namespace JSMF.Parser.AST.Nodes
             }
             catch (Exceptions.EvaluateExceptions.ReturnException e)
             {
-                return e.ReturnValue;
+                return !ThrowExceptions ? e.ReturnValue : throw e;
             }
             catch (Exceptions.EvaluateExceptions.YieldException e)
             {
-                return e.ReturnValue;
+                return !ThrowExceptions ? e.ReturnValue : throw e;
             }
 
             return JSValue.undefined;

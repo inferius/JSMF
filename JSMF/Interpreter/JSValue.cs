@@ -75,7 +75,7 @@ namespace JSMF.Interpreter
         internal object _oValue;
         internal Position _position;
 
-        public virtual object Value
+        public object Value
         {
             get
             {
@@ -109,7 +109,7 @@ namespace JSMF.Interpreter
                         return null;
                 }
             }
-            protected set
+            internal set
             {
                 switch (_valueType)
                 {
@@ -198,6 +198,23 @@ namespace JSMF.Interpreter
             {
                 _valueType = value;
             }
+        }
+
+        public static JSValue ParseNumber(Number num)
+        {
+            var jsValue = new JSValue();
+            if (num.IsInteger)
+            {
+                jsValue._valueType = JSValueType.Integer;
+                jsValue._iValue = num._iValue;
+            }
+            else
+            {
+                jsValue._valueType = JSValueType.Double;
+                jsValue._dValue = num._dValue;
+            }
+
+            return jsValue;
         }
 
         public static JSValue ParseINode(INode data)
@@ -366,6 +383,236 @@ namespace JSMF.Interpreter
             return r;
         }
         #endregion
+
+        #region Operator >
+
+        public static bool operator >(JSValue a, JSValue b)
+        {
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._iValue > b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._iValue > b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._dValue > b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._dValue > b._dValue;
+                }
+            }
+
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        #region Operator <
+        public static bool operator <(JSValue a, JSValue b)
+        {
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._iValue < b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._iValue < b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._dValue < b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._dValue < b._dValue;
+                }
+            }
+            
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        #region Operator >=
+
+        public static bool operator >=(JSValue a, JSValue b)
+        {
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._iValue >= b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._iValue >= b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._dValue >= b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._dValue >= b._dValue;
+                }
+            }
+
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        #region Operator <=
+        public static bool operator <=(JSValue a, JSValue b)
+        {
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._iValue <= b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._iValue <= b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._dValue <= b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._dValue <= b._dValue;
+                }
+            }
+            
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        
+        #region Operator ==
+        public static bool operator ==(JSValue a, JSValue b)
+        {
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._iValue == b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._iValue == b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._dValue == b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._dValue == b._dValue;
+                }
+            }
+
+            if (a.ValueType == JSValueType.String)
+            {
+                if (b.ValueType == JSValueType.String)
+                {
+                    return a._oValue == b._oValue;
+                }
+
+                if (b.ValueType == JSValueType.Boolean)
+                {
+                    return a.IsTrue() == b.IsTrue();
+                }
+                return false;
+            }
+
+            if (a.ValueType == JSValueType.Boolean)
+            {
+                if (b.ValueType is JSValueType.Boolean or JSValueType.String)
+                {
+                    return a.IsTrue() == b.IsTrue();
+                }
+            }
+            
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        
+        #region Operator !=
+        public static bool operator !=(JSValue a, JSValue b)
+        {
+            if (a.ValueType == JSValueType.Integer)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._iValue != b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._iValue != b._dValue;
+                }
+            }
+            else if (a.ValueType == JSValueType.Double)
+            {
+                if (b.ValueType == JSValueType.Integer)
+                {
+                    return a._dValue != b._iValue;
+                }
+                if (b.ValueType == JSValueType.Double)
+                {
+                    return a._dValue != b._dValue;
+                }
+            }
+
+            if (a.ValueType == JSValueType.String)
+            {
+                if (b.ValueType == JSValueType.String)
+                {
+                    return a._oValue != b._oValue;
+                }
+
+                if (b.ValueType == JSValueType.Boolean)
+                {
+                    return a.IsTrue() != b.IsTrue();
+                }
+                return false;
+            }
+
+            if (a.ValueType == JSValueType.Boolean)
+            {
+                if (b.ValueType is JSValueType.Boolean or JSValueType.String)
+                {
+                    return a.IsTrue() != b.IsTrue();
+                }
+            }
+            
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        
         #endregion
     }
 }
