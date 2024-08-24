@@ -23,19 +23,16 @@ namespace JSMF.Parser.AST.Nodes
             
             var aScope = context.Extend();
 
-            if (Condition is NodeBinary condition)
+            var result = Condition.Evaluate(context);
+            if (result.IsTrue())
             {
-                var result = condition.Evaluate(context);
-                if (result.IsTrue())
-                {
-                    Then.Evaluate(aScope);
-                }
-                else
-                {
-                    Else?.Evaluate(aScope);
-                }
+                Then.Evaluate(aScope);
             }
-            
+            else
+            {
+                Else?.Evaluate(aScope);
+            }
+        
             return JSValue.undefined;
         }
     }

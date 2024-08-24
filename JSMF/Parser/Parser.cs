@@ -520,7 +520,7 @@ namespace JSMF.Parser
                 Then = then,
                 FileInfo = _pPos
             };
-
+            SkipAllLineBreak();
             if (IsKeyword("else"))
             {
                 _stream.Next();

@@ -78,6 +78,10 @@ if (2 + 3 * 4 == 14) {
 if (2 + 3 * 4 == 14)
     console.log("TRUE2");
 
+if (false)
+    console.log("TRUE3");
+else 
+    console.log("FALSE");
 
 //function* generator() {
 //    yield 42;
